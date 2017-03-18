@@ -1,3 +1,5 @@
+%dziêki temu skrypty z widoki/ s¹ widoczne
+addpath(genpath('widoki'));
 
 %odpalenie g³ównego widoku aplikacji - czyli wywolanie funkcji
 %zdefiniowanej w glownyWidok.m, która z kolei odpala figure
