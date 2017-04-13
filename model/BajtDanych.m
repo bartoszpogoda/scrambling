@@ -3,24 +3,24 @@ classdef BajtDanych < handle
     %   wraz z funkcjami do operacji na pojedyñczych bitach - narazie
     %   zapewnienie dostêpu i ustawiania bitów na 1/0
     
-    properties %(Access = private) 
-        Bajt
+    properties (Access = private) 
+    	Bajt
     end
     
     methods
         % konstruktor ustawia bajt na 0
-        function obj = BajtDanych()
-          obj.Bajt = uint8(0);
+    	function obj = BajtDanych()
+        	obj.Bajt = uint8(0);
         end
         
         % pobranie i-tego bitu z bajtu
         function o = getBit(obj, i)
-           maska = bitshift(1,i);
-           if bitand(maska, obj.Bajt) == 0
-            o = 0;
-           else
-            o = 1;
-           end
+        	maska = bitshift(1,i);
+            if bitand(maska, obj.Bajt) == 0
+                o = 0;
+        	else
+                o = 1;
+            end
         end
         
         % ustawienie i-tego bitu na wartoœæ 1
@@ -44,6 +44,12 @@ classdef BajtDanych < handle
                obj.setBit(i)
            end
         end
+        
+        % pobranie ca³ego bajtu
+        function o = getBajt(obj)
+        	o = obj.Bajt;
+        end
+        
     end
     
 end
