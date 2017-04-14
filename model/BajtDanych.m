@@ -23,13 +23,13 @@ classdef BajtDanych < handle
             end
         end
         
-        % ustawienie i-tego bitu na wartoœæ 1
+        % ustawienie bitu o i-tej wadze na wartoœæ 1
         function setBit(obj, i)
            maska = uint8(bitshift(1,i));
            obj.Bajt = bitor(obj.Bajt, maska);
         end
         
-        % ustawienie i-tego bitu na wartoœæ 0
+        % ustawienie bitu o i-tej wadze na wartoœæ 0
         function clearBit(obj, i)
            maska = uint8(bitshift(1,i));
            maska = bitcmp(maska);
