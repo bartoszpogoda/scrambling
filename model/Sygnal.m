@@ -31,6 +31,14 @@ classdef Sygnal < handle
         	end
         end
         
+        % obliczenie wartosci sygnalu
+        function o = wartoscSygnalu(obj)
+            o = 0;
+        	for i = 1 : obj.n
+                o = o + (2^(8*(i-1)))*double(obj.Bajty(i).getBajt());
+        	end
+        end
+        
     end
     
 end
