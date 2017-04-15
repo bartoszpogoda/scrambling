@@ -1,21 +1,17 @@
-classdef IdealneMedium < handle
+classdef IdealneMedium < Medium
     %IdealneMedium klasa reprezentuj¹ca idealne medium transmisji
     %   Transmisja odbywa sie bez zadnych przeklaman
-    
-    properties
-        Zawartosc
-    end
     
     methods
         % ...
         function obj = IdealneMedium()
-            obj.Zawartosc = [];
+            obj.zawartosc = [];
         end
         
         % ...
         function przeslij(obj, sygnal)
             if class(sygnal) == "Sygnal" 
-                obj.Zawartosc = sygnal;
+                obj.zawartosc = sygnal.copy;
             else
                 disp("Blad: Przesylany obiekt nie jest sygna³em");
             end
@@ -23,11 +19,11 @@ classdef IdealneMedium < handle
         
         % ...
         function o = pobierz(obj)
-        	if isempty(obj.Zawartosc)
+        	if isempty(obj.zawartosc)
                 o = Sygnal(0);
         	else
-                o = obj.Zawartosc;
-                obj.Zawartosc = [];
+                o = obj.zawartosc;
+                obj.zawartosc = [];
         	end
         end
         

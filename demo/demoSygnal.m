@@ -1,17 +1,40 @@
 addpath(genpath('model'));
 
 % demo Sygnal
-sygnal = Sygnal(3);             % tworzony sygna³ o d³ugoœci 3 bajtów
-sygnal.getBajt(1).setBit(2);    % ustawiony bit wagi 2 - 1 bajtu
-sygnal.getBajt(2).setBit(7);    % ustawiony bit wagi 7 - 2 bajtu     
-sygnal.getBajt(3).setBit(1);    % ustawiony bit wagi 1 - 3 bajtu
+sygnal = Sygnal(10);             % tworzony sygna³ o d³ugoœci 10 bitów
+sygnal.setBit(2);                % ustawiony 2-gi bit (wagi 2^1)
+sygnal.setBit(7);                % ustawiony 7-dmy bit (wagi 2^6)  
+sygnal.setBit(10);               % ustawiony 10-ty bit (wagi 2^9)  
+sygnal.clearBit(10);             % wyzerowany 10-ty bit (wagi 2^9) 
+sygnal.setBitV(4,1);             % ustawiony 4-ty bit (wagi 2^3)   
 
-% 00000010 10000000 00000100
+% ..0001000010
 
-% sprawdzenie ustawienia poszczegolnych bajtow
-disp("Powinno byc 1: " + sygnal.getBajt(1).getBit(2));   
-disp("Powinno byc 1: " + sygnal.getBajt(2).getBit(7));  
-disp("Powinno byc 1: " + sygnal.getBajt(3).getBit(1));  
-disp("Powinno byc 0: " + sygnal.getBajt(3).getBit(2));  
+% próba operacji na bicie spoza tablicy
+disp("Sprawdzenie zglaszania bledow:");
+sygnal.clearBit(11);             
+sygnal.negBit(-2); 
+sygnal.setBit(0);      
+sygnal.setBitV(2131,1);    
+disp(" ");                    
 
-disp("Wartosc sygnalu: " + sygnal.wartoscSygnalu());    
+% sprawdzenie ustawienia poszczegolnych bitow
+disp("Sprawdzenie ustawienia poszczegolnych bitow:");
+disp("Powinno byc 1: " + sygnal.getBit(2));   
+disp("Powinno byc 1: " + sygnal.getBit(7));   
+disp("Powinno byc 0: " + sygnal.getBit(3));  
+disp("Powinno byc 0: " + sygnal.getBit(10));  
+disp("Powinno byc 1: " + sygnal.getBit(4));  
+disp(" ");                  
+
+% sprawdzenie dzia³ania negacji
+disp("Sprawdzenie dzialania negacji:");
+disp("Powinno byc 0: " + sygnal.getBit(8)); 
+sygnal.negBit(8);  
+disp("Powinno byc 1: " + sygnal.getBit(8)); 
+sygnal.negBit(8);  
+disp("Powinno byc 0: " + sygnal.getBit(8)); 
+disp(" ");                  
+
+disp("D³ugoœæ sygna³u: " + sygnal.getSize()); 
+disp("Wartoœæ sygna³u: " + sygnal.wartoscSygnalu());    
