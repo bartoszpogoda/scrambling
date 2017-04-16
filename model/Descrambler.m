@@ -37,7 +37,7 @@ classdef Descrambler < handle
         end
         
         function resetLFSR(obj)
-            obj.LFSR = Seed;
+            obj.LFSR = obj.seed;
         end
         
     end

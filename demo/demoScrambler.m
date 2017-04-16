@@ -17,7 +17,6 @@ sygnal2 = sygnal;
 
 scrambler = Scrambler();
 descrambler = Descrambler();
-
 disp("pocz¹tkowy sygnal"); sygnal.disp();
 sygnal2 = scrambler.scramble(sygnal2);
 disp("po scramblerze"); sygnal2.disp();

@@ -31,12 +31,12 @@ classdef Scrambler < handle
         end
         
         function disp(obj)
-            disp("Descrambler LFSR");
+            disp("Scrambler LFSR");
             disp(obj.LFSR);
         end
         
         function resetLFSR(obj)
-            obj.LFSR = Seed;
+            obj.LFSR = obj.seed;
         end
         
     end
