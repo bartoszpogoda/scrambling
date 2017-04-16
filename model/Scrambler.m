@@ -1,16 +1,21 @@
-classdef Scrambler
+classdef Scrambler < handle
     %UNTITLED2 Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
-        Default
+    properties (Access = private)
+        seed
         LFSR
     end
     
     methods
-        function obj = Scrambler()
-            Default  = [0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1];%randi([0 1],1,59);
-            obj.LFSR = Default;
+        function obj = Scrambler(seed)
+            if(nargin == 0)
+                obj.seed  = [0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1];%randi([0 1],1,59);
+                obj.LFSR = obj.seed;
+            else
+                obj.seed = seed;
+                obj.LFSR = seed;
+            end
         end
         
         function o = scramble(obj, signalToScramble)
@@ -23,8 +28,17 @@ classdef Scrambler
                 
                 o = signalToScramble;
             end
-            end
-                
+        end
+        
+        function disp(obj)
+            disp("Descrambler LFSR");
+            disp(obj.LFSR);
+        end
+        
+        function resetLFSR(obj)
+            obj.LFSR = Seed;
+        end
+        
     end
     
 end
