@@ -18,16 +18,16 @@ classdef Descrambler < handle
             end
         end
         
-        function o = scramble(obj, signalToScramble)
-            for i = 1:signalToScramble.getSize()
-                insertBit = signalToScramble.getBit(i);
+        function o = descramble(obj, signalToDescramble)
+            for i = 1:signalToDescramble.getSize()
+                insertBit = signalToDescramble.getBit(i);
                 x = xor(obj.LFSR(1,1), xor(obj.LFSR(1,40), obj.LFSR(1,59)));
                 x = xor(insertBit, x);
-                signalToScramble.setBitV(i, x);
+                signalToDescramble.setBitV(i, x);
 
                 obj.LFSR = [insertBit, obj.LFSR(1:end-1)];
                 
-                o = signalToScramble;
+                o = signalToDescramble;
             end
         end
         

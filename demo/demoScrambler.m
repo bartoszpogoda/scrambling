@@ -21,5 +21,5 @@ disp("pocz¹tkowy sygnal"); sygnal.disp();
 sygnal2 = scrambler.scramble(sygnal2);
 disp("po scramblerze"); sygnal2.disp();
 %disp(descrambler.LFSR);
-sygnal2 = descrambler.scramble(sygnal2);
+sygnal2 = descrambler.descramble(sygnal2);
 disp("po descramblerze"); sygnal2.disp();
