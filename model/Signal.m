@@ -88,7 +88,11 @@ classdef Signal < handle
         end
         
         function disp(obj)
-            disp(obj.bits);
+            fprintf("[");
+            for i = 1 : obj.size
+               fprintf("%d ", obj.bits(i));
+            end
+            fprintf("\b]\n");
         end
        
     end

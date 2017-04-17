@@ -31,8 +31,12 @@ classdef Scrambler < handle
         end
         
         function disp(obj)
-            disp("Scrambler LFSR");
-            disp(obj.LFSR);
+            disp("Scrambler LFSR: ");
+            fprintf("[");
+            for i = 1 : size(obj.LFSR,2)
+               fprintf("%d ", obj.LFSR(i));
+            end
+            fprintf("\b]\n");
         end
         
         function resetLFSR(obj)
