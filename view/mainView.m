@@ -1,26 +1,26 @@
-function varargout = glownyWidok(varargin)
-% GLOWNYWIDOK MATLAB code for glownyWidok.fig
-%      GLOWNYWIDOK, by itself, creates a new GLOWNYWIDOK or raises the existing
+function varargout = mainView(varargin)
+% MAINVIEW MATLAB code for mainView.fig
+%      MAINVIEW, by itself, creates a new MAINVIEW or raises the existing
 %      singleton*.
 %
-%      H = GLOWNYWIDOK returns the handle to a new GLOWNYWIDOK or the handle to
+%      H = MAINVIEW returns the handle to a new MAINVIEW or the handle to
 %      the existing singleton*.
 %
-%      GLOWNYWIDOK('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in GLOWNYWIDOK.M with the given input arguments.
+%      MAINVIEW('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in MAINVIEW.M with the given input arguments.
 %
-%      GLOWNYWIDOK('Property','Value',...) creates a new GLOWNYWIDOK or raises the
+%      MAINVIEW('Property','Value',...) creates a new MAINVIEW or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before glownyWidok_OpeningFcn gets called.  An
+%      applied to the GUI before mainView_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to glownyWidok_OpeningFcn via varargin.
+%      stop.  All inputs are passed to mainView_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help glownyWidok
+% Edit the above text to modify the response to help mainView
 
 % Last Modified by GUIDE v2.5 18-Mar-2017 01:03:22
 
@@ -28,8 +28,8 @@ function varargout = glownyWidok(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @glownyWidok_OpeningFcn, ...
-                   'gui_OutputFcn',  @glownyWidok_OutputFcn, ...
+                   'gui_OpeningFcn', @mainView_OpeningFcn, ...
+                   'gui_OutputFcn',  @mainView_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,15 +44,15 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before glownyWidok is made visible.
-function glownyWidok_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before mainView is made visible.
+function mainView_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to glownyWidok (see VARARGIN)
 
-% dodalem to tutaj i dziala, pojawia sie na srodku
+% to make GUI appear centered
 movegui(hObject,'center');
 
 % Choose default command line output for glownyWidok
@@ -62,12 +62,12 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 
-% UIWAIT makes glownyWidok wait for user response (see UIRESUME)
+% UIWAIT makes mainView wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = glownyWidok_OutputFcn(hObject, eventdata, handles) 
+function varargout = mainView_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
