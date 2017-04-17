@@ -1,10 +1,9 @@
-%dziêki temu skrypty z widoki/ s¹ widoczne
-addpath(genpath('widoki'));
+% makes view and model scripts visible
+addpath(genpath('view'));
 addpath(genpath('model'));
 
-%odpalenie g³ównego widoku aplikacji - czyli wywolanie funkcji
-%zdefiniowanej w glownyWidok.m, która z kolei odpala figure
-%glownyWidok.fig, stworzon¹ przy pomocy GUIDE (lewym na glownyWidok.fig i
-%edytuj w GUIDE)
-glownyWidok();
+% run mainView of app ( call for function defined in mainView.m, 
+% which runs GUIDE generated figure ( mainView.fig ). To edit the figure
+% simply PPM on it, and "OPEN IN GUIDE"
+mainView();
 
