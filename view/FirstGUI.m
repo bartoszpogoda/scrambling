@@ -1,4 +1,6 @@
 function varargout = FirstGUI(varargin)
+addpath(genpath('view'));
+addpath(genpath('model'));
 % FIRSTGUI MATLAB code for FirstGUI.fig
 %      FIRSTGUI, by itself, creates a new FIRSTGUI or raises the existing
 %      singleton*.
@@ -76,19 +78,21 @@ varargout{1} = handles.output;
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
 fileName = get(handles.fileInput, 'String');
+%set(handles.signal1, 'String', 'io3wuerh4f3uiow4fhwif');
 if isempty(fileName)
     fprintf('Brak pliku');
 else
     fileName = get(handles.fileInput, 'String');
-    file = importdata(fileName);
+    %string = strjoin("",fileName);
+    file = importdata('model/signal.txt');
     size = file(1);
     signal = Signal(size);
     file = file(2:end);
     for i=1 : size
         signal.setBitV(i, file(i));
     end
-    %signal = signalFromFile(fileName);
-    signal.disp();
+    textLabel = signal.toString();%sprintf('Variable C = %f', C);
+    set(handles.signal1, 'String', textLabel);
 end
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB

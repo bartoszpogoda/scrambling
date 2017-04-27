@@ -3,7 +3,7 @@ classdef Signal < handle
     %   bity indeksowane sa od 1 do n
     
     properties (Access = private) 
-        bits, size
+        bits, size, string = " \b";
     end
     
     methods
@@ -93,6 +93,16 @@ classdef Signal < handle
                fprintf("%d ", obj.bits(i));
             end
             fprintf("\b]\n");
+        end
+        
+        function o = toString(obj)
+            
+%             for i = 1 : obj.size
+%                obj.string = strcat("%d ", obj.bits(i));
+%             end
+            obj.string = strcat(obj.bits, "\b]\n");
+            o = obj.string;
+            %o = sprintf(obj.disp());
         end
         
         function obj = signalFromFile(obj, filename)
