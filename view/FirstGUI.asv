@@ -132,11 +132,9 @@ function signalButton_ButtonDownFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in sendButton.
 function sendButton_Callback(hObject, eventdata, handles)
-global encodedSignalVar; global channel; global receivedSignalVar;
+global encodedSignalVar; global channel;
 channel = IdealChannel();
-channel.send(encodedSignalVar);
-receivedSignalVar = channel.receive();
-set(handles.receivedSignal, 'String', receivedSignalVar.toString());
+channel.
 % hObject    handle to sendButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -156,10 +154,6 @@ set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
 
 % --- Executes on button press in descrambleButton.
 function descrambleButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global descrambledSignalVar;
-descrambler = Descrambler();
-descrambledSignalVar = descrambler.descramble(decodedSignalVar);
-set(handles.descrambledSignal, 'String', descrambledSignalVar.toString());
 % hObject    handle to descrambleButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -179,10 +173,6 @@ set(handles.encodedSignal, 'String', encodedSignalVar.toString());
 
 % --- Executes on button press in decodeButton.
 function decodeButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global receivedSignalVar;
-decoder = EthernetDecoder();
-decodedSignalVar = decoder.decode(receivedSignalVar);
-set(handles.decodedSignal, 'String', decodedSignalVar.toString());
 % hObject    handle to decodeButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)

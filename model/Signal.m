@@ -120,6 +120,11 @@ classdef Signal < handle
                 else
                     o = strcat(o,'0');
                 end
+                %Jantos doda³ - czyli nie dzia³a ( \n co 32bit)
+                if mod(i, 20) == 0
+                    o = sprintf('%s\n',o);
+                    %o = strcat(o,'\n');
+                end
             end
         end
         
