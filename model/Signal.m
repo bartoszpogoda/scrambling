@@ -7,12 +7,29 @@ classdef Signal < handle
     end
     
     methods
-        function obj = Signal(size)
+        function obj = Signal(arg)
             if nargin ~= 0
-                obj.size = size;
-                obj.bits = logical.empty;
-                for k = 1 : size
-                    obj.bits(k) = false;
+                if isnumeric(arg)
+                    
+                   obj.size = arg;
+                    obj.bits = logical.empty;
+                    for k = 1 : arg
+                        obj.bits(k) = false;
+                    end
+                    
+                else
+                    
+                    file = importdata(arg);
+                    obj.size = file(1);
+                    obj.bits = logical.empty;
+                    for k = 2 : obj.size+1
+                        if file(k)==0
+                            obj.bits(k-1) = false;
+                        else
+                            obj.bits(k-1) = true;
+                        end
+                    end
+                    
                 end
             else
                 obj.size = 0;
@@ -96,27 +113,16 @@ classdef Signal < handle
         end
         
         function o = toString(obj)
-            
-%             for i = 1 : obj.size
-%                obj.string = strcat("%d ", obj.bits(i));
-%             end
-            obj.string = strcat(obj.bits, "\b]\n");
-            o = obj.string;
-            %o = sprintf(obj.disp());
+            o = string();
+            for i = 1 : obj.size
+                if obj.bits(i) == true
+                    o = strcat(o,'1');
+                else
+                    o = strcat(o,'0');
+                end
+            end
         end
         
-        function obj = signalFromFile(obj, filename)
-            file = importdata(filename);
-            obj.size = file(1);
-                obj.bits = logical.empty;
-                for k = 2 : obj.size+1
-                    if file(k)==0
-                        obj.bits(k-1) = false;
-                    else
-                        obj.bits(k-1) = true;
-                    end
-                end
-        end
     end
     
 end
