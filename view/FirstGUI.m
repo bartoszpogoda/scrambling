@@ -26,7 +26,7 @@ addpath(genpath('model'));
 
 % Edit the above text to modify the response to help FirstGUI
 
-% Last Modified by GUIDE v2.5 27-Apr-2017 22:50:29
+% Last Modified by GUIDE v2.5 28-Apr-2017 00:05:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
+    
 % UIWAIT makes FirstGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -84,14 +84,7 @@ fileName = get(handles.fileInput, 'String');
 if isempty(fileName)
     fprintf('Brak pliku');
 else
-    %fileName = get(handles.fileInput, 'String');
-    file = importdata('model/signal.txt');
-    size = file(1);
-    originalSignalVar = Signal(size);
-    file = file(2:end);
-    for i=1 : size
-        originalSignalVar.setBitV(i, file(i));
-    end
+    originalSignalVar = Signal('files/signal64.txt');
     set(handles.originalSignal, 'String', originalSignalVar.toString());
 end
 % hObject    handle to signalButton (see GCBO)
@@ -146,7 +139,7 @@ set(handles.receivedSignal, 'String', receivedSignalVar.toString());
 function scrambleButton_Callback(hObject, eventdata, handles)
 global originalSignalVar; global scrambledSignalVar;
 scrambler = Scrambler();
-originalSignalVarCopy = originalSignalVar;
+originalSignalVarCopy = originalSignalVar.copy();
 scrambledSignalVar = scrambler.scramble(originalSignalVarCopy);
 set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
 % hObject    handle to scrambleButton (see GCBO)
@@ -156,10 +149,11 @@ set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
 
 % --- Executes on button press in descrambleButton.
 function descrambleButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global descrambledSignalVar;
+global decodedSignalVar; global descrambledSignalVar; global originalSignalVar;
 descrambler = Descrambler();
 descrambledSignalVar = descrambler.descramble(decodedSignalVar);
 set(handles.descrambledSignal, 'String', descrambledSignalVar.toString());
+set(handles.berValue, 'String', Helper.calculateBER(originalSignalVar,descrambledSignalVar));
 % hObject    handle to descrambleButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -204,7 +198,7 @@ set(handles.sliderValue, 'String', BSCpercentage);
 % --- Executes during object creation, after setting all properties.
 function slider_CreateFcn(hObject, eventdata, handles)
 global BSCpercentage;
-set(handles.sliderValue, 'String', BSCpercentage);
+% if set(handles.sliderValue, 'String', BSCpercentage);
 % hObject    handle to slider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -213,3 +207,19 @@ set(handles.sliderValue, 'String', BSCpercentage);
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function sliderValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'String', '0');
+
+
+% --- Executes during object creation, after setting all properties.
+function berValue_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to berValue (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

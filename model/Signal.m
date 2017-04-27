@@ -3,7 +3,7 @@ classdef Signal < handle
     %   bity indeksowane sa od 1 do n
     
     properties (Access = private) 
-        bits, size, string = " \b";
+        bits, size;
     end
     
     methods
