@@ -94,7 +94,19 @@ classdef Signal < handle
             end
             fprintf("\b]\n");
         end
-       
+        
+        function obj = signalFromFile(obj, filename)
+            file = importdata(filename);
+            obj.size = file(1);
+                obj.bits = logical.empty;
+                for k = 2 : obj.size+1
+                    if file(k)==0
+                        obj.bits(k-1) = false;
+                    else
+                        obj.bits(k-1) = true;
+                    end
+                end
+        end
     end
     
 end
