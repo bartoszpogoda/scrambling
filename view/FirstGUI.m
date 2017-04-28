@@ -26,7 +26,7 @@ addpath(genpath('model'));
 
 % Edit the above text to modify the response to help FirstGUI
 
-% Last Modified by GUIDE v2.5 28-Apr-2017 00:05:53
+% Last Modified by GUIDE v2.5 29-Apr-2017 00:23:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -223,3 +223,24 @@ function berValue_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to berValue (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on button press in wrongBitsButton.
+function wrongBitsButton_Callback(hObject, eventdata, handles)
+WrongBits();
+% hObject    handle to wrongBitsButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in customChannelButton.
+function customChannelButton_Callback(hObject, eventdata, handles)
+global encodedSignalVar; global receivedSignalVar; global singleIndexesVar;
+customChannel = CustomChannel();
+customChannel.send(encodedSignalVar);
+customChannel.changeSingleBits(singleIndexesVar);
+receivedSignalVar = customChannel.receive();
+set(handles.receivedSignal, 'String', receivedSignalVar.toString());
+% hObject    handle to customChannelButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
