@@ -3,16 +3,33 @@ classdef Signal < handle
     %   bity indeksowane sa od 1 do n
     
     properties (Access = private) 
-        bits, size
+        bits, size;
     end
     
     methods
-        function obj = Signal(size)
+        function obj = Signal(arg)
             if nargin ~= 0
-                obj.size = size;
-                obj.bits = logical.empty;
-                for k = 1 : size
-                    obj.bits(k) = false;
+                if isnumeric(arg)
+                    
+                   obj.size = arg;
+                    obj.bits = logical.empty;
+                    for k = 1 : arg
+                        obj.bits(k) = false;
+                    end
+                    
+                else
+                    
+                    file = importdata(arg);
+                    obj.size = file(1);
+                    obj.bits = logical.empty;
+                    for k = 2 : obj.size+1
+                        if file(k)==0
+                            obj.bits(k-1) = false;
+                        else
+                            obj.bits(k-1) = true;
+                        end
+                    end
+                    
                 end
             else
                 obj.size = 0;
@@ -94,7 +111,23 @@ classdef Signal < handle
             end
             fprintf("\b]\n");
         end
-       
+        
+        function o = toString(obj)
+            o = string();
+            for i = 1 : obj.size
+                if obj.bits(i) == true
+                    o = strcat(o,'1');
+                else
+                    o = strcat(o,'0');
+                end
+                %Jantos doda³ - czyli nie dzia³a ( \n co 32bit)
+                if mod(i, 20) == 0
+                    o = sprintf('%s\n',o);
+                    %o = strcat(o,'\n');
+                end
+            end
+        end
+        
     end
     
 end

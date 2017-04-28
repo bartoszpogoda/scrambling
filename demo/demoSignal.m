@@ -38,3 +38,11 @@ disp(" ");
 
 disp("Signal size: " + signal.getSize()); 
 disp("Signal dec value: " + signal.decValue());    
+
+disp(" ");                  
+disp("Signal to string: ");
+disp(signal.toString());
+
+signalFile = Signal('signal.txt');
+disp("Signal from file to string: ");
+disp(signalFile.toString());
