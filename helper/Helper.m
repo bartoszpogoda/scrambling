@@ -31,7 +31,15 @@ classdef Helper
             o = incorrectBits/allBits;
         end
         
+        function o = randSignal(signalSize)
+            o = Signal(signalSize);
+            for i = 1 : signalSize 
+                if round(rand())
+                    o.setBit(i);
+                end
+            end
+        end
+        
     end
     
 end
-
