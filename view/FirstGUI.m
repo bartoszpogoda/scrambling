@@ -27,6 +27,7 @@ function FirstGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = hObject;
 guidata(hObject, handles);
+movegui(hObject,'center');
     
 
 % --- Outputs from this function are returned to the command line.
@@ -95,20 +96,6 @@ decodedSignalVar = decoder.decode(receivedSignalVar);
 set(handles.decodedSignal, 'String', decodedSignalVar.toString());
 
 
-% --- Executes on slider movement.
-function slider_Callback(hObject, eventdata, handles)
-global BSCpercentage;
-
-BSCpercentage = get(hObject, 'Value');
-set(handles.sliderValue, 'String', BSCpercentage);
-
-
-
-% --- Executes during object creation, after setting all properties.
-function sliderValue_CreateFcn(hObject, eventdata, handles)
-
-set(hObject, 'String', '0');
-
 
 % --- Executes on button press in wrongBitsButton.
 function wrongBitsButton_Callback(hObject, eventdata, handles)
@@ -121,8 +108,9 @@ function btnConfigureChannel_Callback(hObject, eventdata, handles)
 if get(handles.rbIdealChannel, 'Value') == 1
     % ideal channel selected
 elseif get(handles.rbCustomChannel, 'Value') == 1
-    % custom channel selected
-    WrongBits();
+    ConfigureCustomChannel();
+elseif get(handles.rbBSChannel, 'Value') == 1
+    ConfigureBSC();
 end
 
 % --- Executes on button press in rbIdealChannel.
@@ -141,6 +129,13 @@ set(handles.btnConfigureChannel,'enable','on');
 channel = CustomChannel();
 
 
+% --- Executes on button press in rbBSChannel.
+function rbBSChannel_Callback(hObject, eventdata, handles)
+global channel;
+
+set(handles.btnConfigureChannel,'enable','on');
+channel = BSChannel();
+
+
 
 function fileInput_CreateFcn(hObject, eventdata, handles)
-function slider_CreateFcn(hObject, eventdata, handles)

@@ -1,11 +1,11 @@
-function varargout = WrongBits(varargin)
+function varargout = ConfigureCustomChannel(varargin)
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @WrongBits_OpeningFcn, ...
-                   'gui_OutputFcn',  @WrongBits_OutputFcn, ...
+                   'gui_OpeningFcn', @ConfigureCustomChannel_OpeningFcn, ...
+                   'gui_OutputFcn',  @ConfigureCustomChannel_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -20,15 +20,16 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before WrongBits is made visible.
-function WrongBits_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before ConfigureCustomChannel is made visible.
+function ConfigureCustomChannel_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = hObject;
 guidata(hObject, handles);
+movegui(hObject,'center');
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = WrongBits_OutputFcn(hObject, eventdata, handles) 
+function varargout = ConfigureCustomChannel_OutputFcn(hObject, eventdata, handles) 
 
 varargout{1} = handles.output;
 
