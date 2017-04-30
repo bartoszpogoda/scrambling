@@ -54,42 +54,37 @@ set(hObject, 'String', strcat('Signal length : ', num2str(encodedSignalVar.getSi
 function singleIndexes_CreateFcn(hObject, eventdata, handles)
 global channel;
 
-set(hObject,'string',channel.singleErrorsToString());
+singleErrorsString = channel.singleErrorsToString();
+if  strcmp(singleErrorsString, '')
+    set(hObject,'string','None');
+else
+    set(hObject,'string',channel.singleErrorsToString());
+end
 
 function periodicOKButton_Callback(hObject, eventdata, handles)
-global encodedSignalVar; global channel;
+global channel;
+
 number = str2num(get(handles.periodicNumberOfBits, 'String'));
 interval = str2num(get(handles.periodicInterval, 'String'));
 start = str2num(get(handles.periodicStart, 'String'));
-disp(number);
-disp(interval);
-disp(start);
-disp(encodedSignalVar.getSize());
-A = [];
-intervalFlag = false; tmp = 0;
-for i=1 : encodedSignalVar.getSize()
-    if i >= start
-        if intervalFlag
-            tmp = tmp+1;
-            if tmp == (interval)
-                intervalFlag = false;
-                tmp = 0;
-            end
-        else
-            if tmp ~= number
-                A = [A, i];
-                tmp = tmp+1;
-            end
-            if tmp == number
-                intervalFlag = true;
-                tmp = 0;
-            end
-        end
-    end
-end
-channel.setSingleErrors(A);
+
+channel.setPeriodicNumOfBits(number);
+channel.setPeriodicInterval(interval);
+channel.setPeriodicStart(start);
+
 close(handles.wrongBitsFigure);
 
 function periodicNumberOfBits_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+set(hObject,'string',channel.getPeriodicNumOfBits());
+
 function periodicInterval_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+set(hObject,'string',channel.getPeriodicInterval());
+
 function periodicStart_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+set(hObject,'string',channel.getPeriodicStart());
