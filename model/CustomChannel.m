@@ -2,7 +2,7 @@ classdef CustomChannel < Channel
     %CUSTOMCHANNEL Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (SetAccess = protected, GetAccess = protected)
+    properties 
         singleErrors, periodicNumOfBits, periodicInterval, periodicStart
     end
     
@@ -27,7 +27,12 @@ classdef CustomChannel < Channel
                 if i >= obj.periodicStart
                     if intervalFlag
                         tmp = tmp+1;
-                        if tmp == (obj.periodicInterval)
+                        if tmp == obj.periodicInterval
+                            intervalFlag = false;
+                            tmp = 0;
+                        elseif tmp > obj.periodicInterval
+                            % interval was 0
+                            signal.negBit(i);
                             intervalFlag = false;
                             tmp = 0;
                         end
@@ -77,21 +82,6 @@ classdef CustomChannel < Channel
         	end
         end
         
-        function setSingleErrors(obj, bits)
-            obj.singleErrors = bits;
-        end
-        
-        % add error on bit's position in received signal
-        function addSingleError(obj, bit)
-            obj.singleErrors = [obj.singleErrors; bit];
-        end
-        
-        % clear error on bit's position in received signal
-        function deleteSingleError(obj, bit)
-            index = find(obj.singleErrors==bit,1);
-            obj.singleErrors(index) = [];
-        end
-        
         function o = singleErrorsToString(obj)
             if size(obj.singleErrors) < 1
                o = string;
@@ -105,30 +95,5 @@ classdef CustomChannel < Channel
                 o = [o, ' ', num2str(obj.singleErrors(i))];
             end
         end
-        
-        function setPeriodicNumOfBits(obj, periodicNumOfBits)
-            obj.periodicNumOfBits = periodicNumOfBits;
-        end
-        
-        function setPeriodicInterval(obj, periodicInterval)
-            obj.periodicInterval = periodicInterval;
-        end
-        
-        function setPeriodicStart(obj, periodicStart)
-            obj.periodicStart = periodicStart;
-        end
-        
-        function o = getPeriodicNumOfBits(obj)
-            o = obj.periodicNumOfBits;
-        end
-        
-        function o = getPeriodicInterval(obj)
-            o = obj.periodicInterval;
-        end
-        
-        function o = getPeriodicStart(obj)
-            o = obj.periodicStart;
-        end
-        
     end
 end

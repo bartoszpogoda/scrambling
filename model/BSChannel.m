@@ -2,14 +2,14 @@ classdef BSChannel < Channel
     %BSCHANNEL Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (SetAccess = protected, GetAccess = protected)
-        p % crossover probability
+    properties
+        probability % crossover probability
     end
     
     methods
         function obj = BSChannel()
             obj.signal = [];
-            obj.p = 0;
+            obj.probability = 0;
         end
         
         function send(obj, signal)
@@ -28,7 +28,7 @@ classdef BSChannel < Channel
                 o = obj.signal;
                 
                 for i = 1 : o.getSize();
-                    if rand < obj.p
+                    if rand < obj.probability
                         o.negBit(i);
                     end
                 end
@@ -37,17 +37,9 @@ classdef BSChannel < Channel
         	end
         end
         
-        function setProbability(obj, probability)
-            obj.p = probability;
-        end
-        
-        function o = getProbability(obj)
-            o = obj.p;
-        end
-        
         % probably not needed
         function o = probabilityToString(obj)
-            o = num2str(obj.p, 3);
+            o = num2str(obj.probability, 3);
         end
     end
     

@@ -39,7 +39,7 @@ function btnOKBSC_Callback(hObject, eventdata, handles)
 global channel;
 
 probabilityValue = get(handles.sliderProbabilityBSC, 'Value');
-channel.setProbability(probabilityValue);
+channel.probability = probabilityValue;
 close(handles.figConfigureBSC);
 
 % --- Executes on slider movement.
@@ -57,7 +57,7 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-set(hObject,'Value',channel.getProbability());
+set(hObject,'Value',channel.probability);
 
 
 
@@ -81,4 +81,4 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-set(hObject,'String',channel.getProbability());
+set(hObject,'String',channel.probability);

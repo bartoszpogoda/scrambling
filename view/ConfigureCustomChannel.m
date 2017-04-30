@@ -39,8 +39,7 @@ function singleOKButton_Callback(hObject, eventdata, handles)
 global channel;
 
 textBoxString = get(handles.singleIndexes, 'String');
-singleIndexesVar = sscanf(textBoxString, '%d ');
-channel.setSingleErrors(singleIndexesVar);
+channel.singleErrors = sscanf(textBoxString, '%d ');
 close(handles.wrongBitsFigure);
 
 
@@ -68,23 +67,23 @@ number = str2num(get(handles.periodicNumberOfBits, 'String'));
 interval = str2num(get(handles.periodicInterval, 'String'));
 start = str2num(get(handles.periodicStart, 'String'));
 
-channel.setPeriodicNumOfBits(number);
-channel.setPeriodicInterval(interval);
-channel.setPeriodicStart(start);
+channel.periodicNumOfBits = number;
+channel.periodicInterval = interval;
+channel.periodicStart = start;
 
 close(handles.wrongBitsFigure);
 
 function periodicNumberOfBits_CreateFcn(hObject, eventdata, handles)
 global channel;
 
-set(hObject,'string',channel.getPeriodicNumOfBits());
+set(hObject,'string',channel.periodicNumOfBits);
 
 function periodicInterval_CreateFcn(hObject, eventdata, handles)
 global channel;
 
-set(hObject,'string',channel.getPeriodicInterval());
+set(hObject,'string',channel.periodicInterval);
 
 function periodicStart_CreateFcn(hObject, eventdata, handles)
 global channel;
 
-set(hObject,'string',channel.getPeriodicStart());
+set(hObject,'string',channel.periodicStart);
