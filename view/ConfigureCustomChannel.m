@@ -56,6 +56,40 @@ global channel;
 
 set(hObject,'string',channel.singleErrorsToString());
 
+function periodicOKButton_Callback(hObject, eventdata, handles)
+global encodedSignalVar; global channel;
+number = str2num(get(handles.periodicNumberOfBits, 'String'));
+interval = str2num(get(handles.periodicInterval, 'String'));
+start = str2num(get(handles.periodicStart, 'String'));
+disp(number);
+disp(interval);
+disp(start);
+disp(encodedSignalVar.getSize());
+A = [];
+intervalFlag = false; tmp = 0;
+for i=1 : encodedSignalVar.getSize()
+    if i >= start
+        if intervalFlag
+            tmp = tmp+1;
+            if tmp == (interval)
+                intervalFlag = false;
+                tmp = 0;
+            end
+        else
+            if tmp ~= number
+                A = [A, i];
+                tmp = tmp+1;
+            end
+            if tmp == number
+                intervalFlag = true;
+                tmp = 0;
+            end
+        end
+    end
+end
+channel.setSingleErrors(A);
+close(handles.wrongBitsFigure);
+
 function periodicNumberOfBits_CreateFcn(hObject, eventdata, handles)
 function periodicInterval_CreateFcn(hObject, eventdata, handles)
 function periodicStart_CreateFcn(hObject, eventdata, handles)

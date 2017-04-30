@@ -13,6 +13,7 @@ classdef Scrambler < handle
                 obj.seed  = [0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1];%randi([0 1],1,59);
                 obj.LFSR = obj.seed;
             else
+                %disp(class(seed));
                 obj.seed = seed;
                 obj.LFSR = seed;
             end
@@ -44,6 +45,6 @@ classdef Scrambler < handle
         end
         
     end
-    
+
 end
 

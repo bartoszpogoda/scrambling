@@ -39,19 +39,13 @@ varargout{1} = handles.output;
 % --- Executes on button press in signalButton.
 function signalButton_Callback(hObject, eventdata, handles)
 global file; global originalSignalVar;
-
-fileName = get(handles.fileInput, 'String');
-if isempty(fileName)
-    fprintf('Brak pliku');
-else
-    originalSignalVar = Signal('files/signal64.txt');
-    set(handles.originalSignal, 'string', originalSignalVar.toString());
-end
+[fn, fp] = uigetfile('*.txt', 'Select signal file');
+originalSignalVar = Signal(fullfile(fp,fn));
+set(handles.originalSignal, 'string', originalSignalVar.toString());
 
 % --- Executes on button press in sendButton.
 function sendButton_Callback(hObject, eventdata, handles)
 global encodedSignalVar; global channel; global receivedSignalVar;
-
 channel.send(encodedSignalVar);
 receivedSignalVar = channel.receive();
 set(handles.receivedSignal, 'String', receivedSignalVar.toString());
@@ -59,19 +53,31 @@ set(handles.receivedSignal, 'String', receivedSignalVar.toString());
 
 % --- Executes on button press in scrambleButton.
 function scrambleButton_Callback(hObject, eventdata, handles)
-global originalSignalVar; global scrambledSignalVar;
-
-scrambler = Scrambler();
+global originalSignalVar; global scrambledSignalVar; global LFSRFileVar;
+if LFSRFileVar == 0
+    disp('bezpliku');
+    scrambler = Scrambler();
+else
+    disp('zplikiem');
+    scrambler = Scrambler(LFSRFileVar);
+end
 originalSignalVarCopy = originalSignalVar.copy();
 scrambledSignalVar = scrambler.scramble(originalSignalVarCopy);
 set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
+scrambler.disp();
 
 
 % --- Executes on button press in descrambleButton.
 function descrambleButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global descrambledSignalVar; global originalSignalVar;
-
-descrambler = Descrambler();
+global decodedSignalVar; global descrambledSignalVar; global originalSignalVar; global LFSRFileVar;
+if LFSRFileVar == 0
+    disp('bezpliku');
+    descrambler = Descrambler();
+else
+    disp('zplikiem');
+    descrambler = Descrambler(LFSRFileVar);
+end
+%descrambler = Descrambler();
 descrambledSignalVar = descrambler.descramble(decodedSignalVar);
 set(handles.descrambledSignal, 'String', descrambledSignalVar.toString());
 set(handles.berValue, 'String', Helper.calculateBER(originalSignalVar,descrambledSignalVar));
@@ -90,7 +96,6 @@ set(handles.encodedSignal, 'String', encodedSignalVar.toString());
 % --- Executes on button press in decodeButton.
 function decodeButton_Callback(hObject, eventdata, handles)
 global decodedSignalVar; global receivedSignalVar;
-
 decoder = EthernetDecoder();
 decodedSignalVar = decoder.decode(receivedSignalVar);
 set(handles.decodedSignal, 'String', decodedSignalVar.toString());
@@ -139,3 +144,28 @@ channel = BSChannel();
 
 
 function fileInput_CreateFcn(hObject, eventdata, handles)
+
+
+% --- Executes on button press in loadLFSRButton.
+function loadLFSRButton_Callback(hObject, eventdata, handles)
+global LFSRFileVar;
+[fn, fp] = uigetfile('*.txt', 'Select LFSR file');
+LFSRFileVar = importdata(fullfile(fp,fn));
+% hObject    handle to loadLFSRButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in clearAllButton.
+function clearAllButton_Callback(hObject, eventdata, handles)
+set(handles.originalSignal, 'String', '');
+set(handles.scrambledSignal, 'String', '');
+set(handles.encodedSignal, 'String', '');
+set(handles.receivedSignal, 'String', '');
+set(handles.decodedSignal, 'String', '');
+set(handles.descrambledSignal, 'String', '');
+global LFSRFileVar;
+LFSRFileVar = 0;
+% hObject    handle to clearAllButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
