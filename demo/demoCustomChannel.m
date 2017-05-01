@@ -13,13 +13,8 @@ disp("Value at sender's side: " + signalSender.toString());
 customChannel.send(signalSender);
 
 % add errors on the first and the last bits of signal
-customChannel.addSingleError(1);
-customChannel.addSingleError(signalSize);
-customChannel.addSingleError(2);
+customChannel.singleErrors = [1; signalSize];
 
-disp("Error channel state: " + customChannel.singleErrorsToString());
-
-customChannel.deleteSingleError(2);
 
 disp("Error channel state: " + customChannel.singleErrorsToString());
 
@@ -29,7 +24,26 @@ disp("Value at receiver's side: " + signalReceiver.toString());
 disp(" ");
 
 % errors from array
-customChannel.setSingleErrors([1;2;3]);
+customChannel.singleErrors = [1; 2; 3];
 disp("Error channel state: " + customChannel.singleErrorsToString());
+
+% desync test
+
+
+disp(" ");
+disp("Desync Test: ")
+
+rSignal = Helper.randSignal(16); % create signal
+disp("Signal at sender's side: " + rSignal.toString());
+
+customChannel = CustomChannel();
+customChannel.desyncType = -1;
+% customChannel.desyncType = 1;
+customChannel.desyncBreakpoint = 3;
+
+customChannel.send(rSignal);
+rSignal = customChannel.receive();
+
+disp("Signal at receiver's side: " + rSignal.toString());
 
   

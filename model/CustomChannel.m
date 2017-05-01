@@ -3,7 +3,8 @@ classdef CustomChannel < Channel
     %   Detailed explanation goes here
     
     properties 
-        singleErrors, periodicNumOfBits, periodicInterval, periodicStart
+        singleErrors, periodicNumOfBits, periodicInterval, periodicStart,
+        desyncBreakpoint, desyncType % type 1 - add, 0 - none, type -1 - delete
     end
     
 	methods (Access = private)
@@ -49,7 +50,46 @@ classdef CustomChannel < Channel
                 end
             end
         end
-	end
+        
+        function applyDesyncErrors(obj, signal)
+            if obj.desyncType == 0 || obj.desyncBreakpoint == 0
+                return;
+            end
+            
+            repeatState = -1; 
+            repeatCounter = 0;
+            
+            i = 1;
+            while i <= signal.getSize()
+                if signal.getBit(i) == repeatState
+                   repeatCounter = repeatCounter + 1; 
+                else
+                   repeatCounter = 0;
+                end
+                
+                if repeatCounter == 0 
+                    repeatState = signal.getBit(i);
+                    repeatCounter = repeatCounter + 1;
+                end
+                
+                if repeatCounter == obj.desyncBreakpoint
+                    if obj.desyncType == 1
+                        % add one more 0 or 1
+                        signal.insertBit(i, repeatState);
+                        i = i+1; % fix loop
+                        
+                    elseif obj.desyncType == -1
+                        % delete one bit
+                        signal.removeBit(i);
+                        i = i-1; % fix loop
+                    end
+                    
+                    repeatCounter = 0;
+                end
+                i = i + 1;
+            end
+        end
+    end
     
     methods
         function obj = CustomChannel()
@@ -58,6 +98,8 @@ classdef CustomChannel < Channel
             obj.periodicNumOfBits = 0;
             obj.periodicInterval = 0;
             obj.periodicStart = 1;
+            obj.desyncType = 0;
+            obj.desyncBreakpoint = 0;
         end
         
         function send(obj, signal)
@@ -77,6 +119,7 @@ classdef CustomChannel < Channel
                 
                 obj.applyPeriodicErrors(o);
                 obj.applySingleErrors(o);
+                obj.applyDesyncErrors(o);
                 
                 obj.signal = [];
         	end
