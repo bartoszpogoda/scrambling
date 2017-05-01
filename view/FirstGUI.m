@@ -24,10 +24,12 @@ end
 
 % --- Executes just before FirstGUI is made visible.
 function FirstGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+global channel;
 
 handles.output = hObject;
 guidata(hObject, handles);
 movegui(hObject,'center');
+channel = IdealChannel();
     
 
 % --- Outputs from this function are returned to the command line.
@@ -36,16 +38,10 @@ function varargout = FirstGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in signalButton.
-function signalButton_Callback(hObject, eventdata, handles)
-global file; global originalSignalVar;
-[fn, fp] = uigetfile('*.txt', 'Select signal file');
-originalSignalVar = Signal(fullfile(fp,fn));
-set(handles.originalSignal, 'string', originalSignalVar.toString());
-
 % --- Executes on button press in sendButton.
 function sendButton_Callback(hObject, eventdata, handles)
 global encodedSignalVar; global channel; global receivedSignalVar;
+
 channel.send(encodedSignalVar);
 receivedSignalVar = channel.receive();
 set(handles.receivedSignal, 'String', receivedSignalVar.toString());
@@ -89,7 +85,7 @@ global encodedSignalVar; global scrambledSignalVar;
 
 encoder = EthernetCoder();
 scrambledSignalVarCopy = scrambledSignalVar;
-encodedSignalVar = encoder.encode(scrambledSignalVarCopy);
+encodedSignalVar = encoder.encode(Helper.appendToAlign64(scrambledSignalVarCopy));
 set(handles.encodedSignal, 'String', encodedSignalVar.toString());
 
 
@@ -169,3 +165,48 @@ LFSRFileVar = 0;
 % hObject    handle to clearAllButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in btnSignalOK.
+function btnSignalOK_Callback(hObject, eventdata, handles)
+global originalSignalVar; global file;
+
+if get(handles.rbSignalRandom,'value') == 1
+    originalSignalVar = Helper.randSignal(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
+elseif get(handles.rbSignalFromFile,'value') == 1
+    [fn, fp] = uigetfile('*.txt', 'Select signal file');
+    originalSignalVar = Signal(fullfile(fp,fn));
+    set(handles.originalSignal, 'string', originalSignalVar.toString());
+    
+end
+
+set(handles.originalSignal, 'string', originalSignalVar.toString());
+
+
+% --- Executes during object creation, after setting all properties.
+function tbSignalRandomSize_CreateFcn(hObject, eventdata, handles)
+
+
+% --- Executes on button press in rbSignalRandom.
+function rbSignalRandom_Callback(hObject, eventdata, handles)
+
+set(handles.tbSignalRandomSize,'enable','on');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Generate');
+
+
+function tbSignalRandomSize_Callback(hObject, eventdata, handles)
+
+
+% --- Executes on button press in rbSignalFromFile.
+function rbSignalFromFile_Callback(hObject, eventdata, handles)
+
+set(handles.tbSignalRandomSize,'enable','off');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Load');
+
+
+% --- Executes during object creation, after setting all properties.
+function rbSignalFromFile_CreateFcn(hObject, eventdata, handles)
+
+set(hObject,'value',1);
