@@ -87,3 +87,58 @@ function periodicStart_CreateFcn(hObject, eventdata, handles)
 global channel;
 
 set(hObject,'string',channel.periodicStart);
+
+
+% --- Executes on button press in btnDesyncOK.
+function btnDesyncOK_Callback(hObject, eventdata, handles)
+global channel;
+
+channel.desyncBreakpoint = str2num(get(handles.tbDesyncBreakpoint, 'String'));
+
+if get(handles.rbDesyncTypeAppend,'value') == 1
+    channel.desyncType = 1;
+elseif get(handles.rbDesyncTypeDelete,'value') == 1
+    channel.desyncType = -1;
+else
+    channel.desyncType = 0;
+end
+    
+close(handles.wrongBitsFigure);
+
+% --- Executes during object creation, after setting all properties.
+function tbDesyncBreakpoint_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+set(hObject,'string',channel.desyncBreakpoint);
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function rbDesyncTypeAppend_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+if channel.desyncType == 1
+    set(hObject,'value',1);
+end
+    
+
+% --- Executes during object creation, after setting all properties.
+function rbDesyncTypeDelete_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+if channel.desyncType == -1
+    set(hObject,'value',1);
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function rbDesyncNone_CreateFcn(hObject, eventdata, handles)
+global channel;
+
+if channel.desyncType == 0
+    set(hObject,'value',1);
+end
+
+
+function tbDesyncBreakpoint_Callback(hObject, eventdata, handles)
