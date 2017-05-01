@@ -97,6 +97,24 @@ classdef Signal < handle
         	end
         end
         
+        function insertBit(obj, afterBit, v)
+            firstPart = obj.bits(1:afterBit);
+            secondPart = obj.bits(afterBit + 1:obj.size);
+            
+            obj.bits = [firstPart false secondPart];
+            obj.size = obj.size + 1;
+            
+            obj.setBitV(afterBit+1,v);
+        end
+        
+        function removeBit(obj, bit)
+            firstPart = obj.bits(1:bit-1);
+            secondPart = obj.bits(bit+1:obj.size);
+            
+            obj.bits = [firstPart secondPart];
+            obj.size = obj.size - 1;
+        end
+        
         function o = decValue(obj)
             o = 0;
         	for i = 1 : obj.size
