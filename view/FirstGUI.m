@@ -29,6 +29,7 @@ global channel;
 handles.output = hObject;
 guidata(hObject, handles);
 movegui(hObject,'center');
+set(handles.rbIdealChannel,'value',1);
 channel = IdealChannel();
     
 
@@ -147,9 +148,6 @@ function loadLFSRButton_Callback(hObject, eventdata, handles)
 global LFSRFileVar;
 [fn, fp] = uigetfile('*.txt', 'Select LFSR file');
 LFSRFileVar = importdata(fullfile(fp,fn));
-% hObject    handle to loadLFSRButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in clearAllButton.
@@ -160,11 +158,14 @@ set(handles.encodedSignal, 'String', '');
 set(handles.receivedSignal, 'String', '');
 set(handles.decodedSignal, 'String', '');
 set(handles.descrambledSignal, 'String', '');
+set(handles.rbSignalFromFile,'value',1);
+set(handles.rbIdealChannel,'value',1);
+set(handles.btnConfigureChannel,'enable','off');
+set(handles.tbSignalRandomSize,'enable','off');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Load');
 global LFSRFileVar;
 LFSRFileVar = 0;
-% hObject    handle to clearAllButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in btnSignalOK.
@@ -208,5 +209,11 @@ set(handles.btnSignalOK,'string','Load');
 
 % --- Executes during object creation, after setting all properties.
 function rbSignalFromFile_CreateFcn(hObject, eventdata, handles)
+
+set(hObject,'value',1);
+
+
+% --- Executes during object creation, after setting all properties.
+function rbIdealChannel_CreateFcn(hObject, eventdata, handles)
 
 set(hObject,'value',1);

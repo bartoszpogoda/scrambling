@@ -10,7 +10,9 @@ classdef CustomChannel < Channel
 	methods (Access = private)
         function applySingleErrors(obj, signal)
             for i = 1 : size(obj.singleErrors)
-                if obj.singleErrors(i) >= 1 && obj.singleErrors(i) <= signal.getSize()
+                if obj.singleErrors(i) <= -1 && obj.singleErrors(i) >= -(signal.getSize())
+                    signal.negBit(signal.getSize() + obj.singleErrors(i) + 1);
+                elseif obj.singleErrors(i) >= 1 && obj.singleErrors(i) <= signal.getSize()
                     signal.negBit(obj.singleErrors(i));
                 end
             end		

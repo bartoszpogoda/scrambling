@@ -43,13 +43,6 @@ channel.singleErrors = sscanf(textBoxString, '%d ');
 close(handles.wrongBitsFigure);
 
 
-% --- Executes during object creation, after setting all properties.
-function singleInfo_CreateFcn(hObject, eventdata, handles)
-global encodedSignalVar;
-
-set(hObject, 'String', strcat('Signal length : ', num2str(encodedSignalVar.getSize()), '(for making last bits wrong)'));
-
-
 function singleIndexes_CreateFcn(hObject, eventdata, handles)
 global channel;
 
