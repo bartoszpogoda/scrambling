@@ -1,32 +1,6 @@
 function varargout = FirstGUI(varargin)
 addpath(genpath('view'));
 addpath(genpath('model'));
-%originalSignalVar; scrambledSignalVar; encodedSignalVar;
-%receivedSignalVar; descrambledSignalVar; decodedSignalVar;
-% FIRSTGUI MATLAB code for FirstGUI.fig
-%      FIRSTGUI, by itself, creates a new FIRSTGUI or raises the existing
-%      singleton*.
-%
-%      H = FIRSTGUI returns the handle to a new FIRSTGUI or the handle to
-%      the existing singleton*.
-%
-%      FIRSTGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in FIRSTGUI.M with the given input arguments.
-%
-%      FIRSTGUI('Property','Value',...) creates a new FIRSTGUI or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before FirstGUI_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to FirstGUI_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
-% Edit the above text to modify the response to help FirstGUI
-
-% Last Modified by GUIDE v2.5 28-Apr-2017 00:05:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -50,125 +24,70 @@ end
 
 % --- Executes just before FirstGUI is made visible.
 function FirstGUI_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to FirstGUI (see VARARGIN)
+global channel;
 
-% Choose default command line output for FirstGUI
 handles.output = hObject;
-
-% Update handles structure
 guidata(hObject, handles);
+movegui(hObject,'center');
+set(handles.rbIdealChannel,'value',1);
+channel = IdealChannel();
     
-% UIWAIT makes FirstGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = FirstGUI_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Get default command line output from handles structure
 varargout{1} = handles.output;
-
-
-% --- Executes on button press in signalButton.
-function signalButton_Callback(hObject, eventdata, handles)
-global file; global originalSignalVar;
-fileName = get(handles.fileInput, 'String');
-if isempty(fileName)
-    fprintf('Brak pliku');
-else
-    originalSignalVar = Signal('files/signal64.txt');
-    set(handles.originalSignal, 'String', originalSignalVar.toString());
-end
-% hObject    handle to signalButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-function fileInput_Callback(hObject, eventdata, handles)
-% hObject    handle to fileInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of fileInput as text
-%        str2double(get(hObject,'String')) returns contents of fileInput as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function fileInput_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to fileInput (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over signalButton.
-function signalButton_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to signalButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in sendButton.
 function sendButton_Callback(hObject, eventdata, handles)
 global encodedSignalVar; global channel; global receivedSignalVar;
-channel = IdealChannel();
+
 channel.send(encodedSignalVar);
 receivedSignalVar = channel.receive();
 set(handles.receivedSignal, 'String', receivedSignalVar.toString());
-% hObject    handle to sendButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in scrambleButton.
 function scrambleButton_Callback(hObject, eventdata, handles)
-global originalSignalVar; global scrambledSignalVar;
-scrambler = Scrambler();
+global originalSignalVar; global scrambledSignalVar; global LFSRFileVar;
+if LFSRFileVar == 0
+    disp('bezpliku');
+    scrambler = Scrambler();
+else
+    disp('zplikiem');
+    scrambler = Scrambler(LFSRFileVar);
+end
 originalSignalVarCopy = originalSignalVar.copy();
 scrambledSignalVar = scrambler.scramble(originalSignalVarCopy);
 set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
-% hObject    handle to scrambleButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+scrambler.disp();
 
 
 % --- Executes on button press in descrambleButton.
 function descrambleButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global descrambledSignalVar; global originalSignalVar;
-descrambler = Descrambler();
+global decodedSignalVar; global descrambledSignalVar; global originalSignalVar; global LFSRFileVar;
+if LFSRFileVar == 0
+    disp('bezpliku');
+    descrambler = Descrambler();
+else
+    disp('zplikiem');
+    descrambler = Descrambler(LFSRFileVar);
+end
+%descrambler = Descrambler();
 descrambledSignalVar = descrambler.descramble(decodedSignalVar);
 set(handles.descrambledSignal, 'String', descrambledSignalVar.toString());
 set(handles.berValue, 'String', Helper.calculateBER(originalSignalVar,descrambledSignalVar));
-% hObject    handle to descrambleButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in encodeButton.
 function encodeButton_Callback(hObject, eventdata, handles)
 global encodedSignalVar; global scrambledSignalVar;
+
 encoder = EthernetCoder();
 scrambledSignalVarCopy = scrambledSignalVar;
-encodedSignalVar = encoder.encode(scrambledSignalVarCopy);
+encodedSignalVar = encoder.encode(Helper.appendToAlign64(scrambledSignalVarCopy));
 set(handles.encodedSignal, 'String', encodedSignalVar.toString());
-% hObject    handle to encodeButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
 % --- Executes on button press in decodeButton.
@@ -177,49 +96,124 @@ global decodedSignalVar; global receivedSignalVar;
 decoder = EthernetDecoder();
 decodedSignalVar = decoder.decode(receivedSignalVar);
 set(handles.decodedSignal, 'String', decodedSignalVar.toString());
-% hObject    handle to decodeButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on slider movement.
-function slider_Callback(hObject, eventdata, handles)
-global BSCpercentage;
-BSCpercentage = get(hObject, 'Value');
-set(handles.sliderValue, 'String', BSCpercentage);
-% hObject    handle to slider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+% --- Executes on button press in wrongBitsButton.
+function wrongBitsButton_Callback(hObject, eventdata, handles)
+WrongBits();
 
 
-% --- Executes during object creation, after setting all properties.
-function slider_CreateFcn(hObject, eventdata, handles)
-global BSCpercentage;
-% if set(handles.sliderValue, 'String', BSCpercentage);
-% hObject    handle to slider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% --- Executes on button press in btnConfigureChannel.
+function btnConfigureChannel_Callback(hObject, eventdata, handles)
 
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
+if get(handles.rbIdealChannel, 'Value') == 1
+    % ideal channel selected
+elseif get(handles.rbCustomChannel, 'Value') == 1
+    ConfigureCustomChannel();
+elseif get(handles.rbBSChannel, 'Value') == 1
+    ConfigureBSC();
 end
 
+% --- Executes on button press in rbIdealChannel.
+function rbIdealChannel_Callback(hObject, eventdata, handles)
+global channel;
+
+set(handles.btnConfigureChannel,'enable','off');
+channel = IdealChannel();
+
+
+% --- Executes on button press in rbCustomChannel.
+function rbCustomChannel_Callback(hObject, eventdata, handles)
+global channel;
+
+set(handles.btnConfigureChannel,'enable','on');
+channel = CustomChannel();
+
+
+% --- Executes on button press in rbBSChannel.
+function rbBSChannel_Callback(hObject, eventdata, handles)
+global channel;
+
+set(handles.btnConfigureChannel,'enable','on');
+channel = BSChannel();
+
+
+
+function fileInput_CreateFcn(hObject, eventdata, handles)
+
+
+% --- Executes on button press in loadLFSRButton.
+function loadLFSRButton_Callback(hObject, eventdata, handles)
+global LFSRFileVar;
+[fn, fp] = uigetfile('*.txt', 'Select LFSR file');
+LFSRFileVar = importdata(fullfile(fp,fn));
+
+
+% --- Executes on button press in clearAllButton.
+function clearAllButton_Callback(hObject, eventdata, handles)
+set(handles.originalSignal, 'String', '');
+set(handles.scrambledSignal, 'String', '');
+set(handles.encodedSignal, 'String', '');
+set(handles.receivedSignal, 'String', '');
+set(handles.decodedSignal, 'String', '');
+set(handles.descrambledSignal, 'String', '');
+set(handles.rbSignalFromFile,'value',1);
+set(handles.rbIdealChannel,'value',1);
+set(handles.btnConfigureChannel,'enable','off');
+set(handles.tbSignalRandomSize,'enable','off');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Load');
+global LFSRFileVar;
+LFSRFileVar = 0;
+
+
+% --- Executes on button press in btnSignalOK.
+function btnSignalOK_Callback(hObject, eventdata, handles)
+global originalSignalVar; global file;
+
+if get(handles.rbSignalRandom,'value') == 1
+    originalSignalVar = Helper.randSignal(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
+elseif get(handles.rbSignalFromFile,'value') == 1
+    [fn, fp] = uigetfile('*.txt', 'Select signal file');
+    originalSignalVar = Signal(fullfile(fp,fn));
+    set(handles.originalSignal, 'string', originalSignalVar.toString());
+    
+end
+
+set(handles.originalSignal, 'string', originalSignalVar.toString());
+
 
 % --- Executes during object creation, after setting all properties.
-function sliderValue_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to sliderValue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+function tbSignalRandomSize_CreateFcn(hObject, eventdata, handles)
 
-set(hObject, 'String', '0');
+
+% --- Executes on button press in rbSignalRandom.
+function rbSignalRandom_Callback(hObject, eventdata, handles)
+
+set(handles.tbSignalRandomSize,'enable','on');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Generate');
+
+
+function tbSignalRandomSize_Callback(hObject, eventdata, handles)
+
+
+% --- Executes on button press in rbSignalFromFile.
+function rbSignalFromFile_Callback(hObject, eventdata, handles)
+
+set(handles.tbSignalRandomSize,'enable','off');
+set(handles.btnSignalOK,'enable','on');
+set(handles.btnSignalOK,'string','Load');
 
 
 % --- Executes during object creation, after setting all properties.
-function berValue_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to berValue (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+function rbSignalFromFile_CreateFcn(hObject, eventdata, handles)
+
+set(hObject,'value',1);
+
+
+% --- Executes during object creation, after setting all properties.
+function rbIdealChannel_CreateFcn(hObject, eventdata, handles)
+
+set(hObject,'value',1);

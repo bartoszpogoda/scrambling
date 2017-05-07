@@ -43,6 +43,11 @@ disp(" ");
 disp("Signal to string: ");
 disp(signal.toString());
 
-signalFile = Signal('signal.txt');
-disp("Signal from file to string: ");
-disp(signalFile.toString());
+% insert 1 after 9th bit
+signal.insertBit(9,1);
+disp(signal.toString());
+
+% remove 2nd bit
+signal.removeBit(2);
+disp(signal.toString());
+

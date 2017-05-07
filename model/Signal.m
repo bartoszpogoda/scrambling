@@ -97,6 +97,24 @@ classdef Signal < handle
         	end
         end
         
+        function insertBit(obj, afterBit, v)
+            firstPart = obj.bits(1:afterBit);
+            secondPart = obj.bits(afterBit + 1:obj.size);
+            
+            obj.bits = [firstPart false secondPart];
+            obj.size = obj.size + 1;
+            
+            obj.setBitV(afterBit+1,v);
+        end
+        
+        function removeBit(obj, bit)
+            firstPart = obj.bits(1:bit-1);
+            secondPart = obj.bits(bit+1:obj.size);
+            
+            obj.bits = [firstPart secondPart];
+            obj.size = obj.size - 1;
+        end
+        
         function o = decValue(obj)
             o = 0;
         	for i = 1 : obj.size
@@ -117,13 +135,18 @@ classdef Signal < handle
             for i = 1 : obj.size
                 if obj.bits(i) == true
                     o = strcat(o,'1');
+                   % o = [o, '1'];
                 else
                     o = strcat(o,'0');
+                   % o = [o, '0'];
                 end
+                
                 %Jantos doda³ - czyli nie dzia³a ( \n co 32bit)
-                if mod(i, 20) == 0
-                    o = sprintf('%s\n',o);
+                if mod(i, 5) == 0
+                    % o = sprintf('%s\n',o);
                     %o = strcat(o,'\n');
+                    % o = sprintf('%s\n%s',o,' ');
+                      %  o = [o, ' '];
                 end
             end
         end
