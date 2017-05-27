@@ -132,7 +132,6 @@ classdef EthernetDecoder < handle
             
             signalSize = signal.getSize();
             numberOfFrames = floor(signalSize/66);
-            
             decodedSignal = Signal(numberOfFrames*64);
             
             k = 1; % holds decodedSignal iterator index
@@ -142,7 +141,6 @@ classdef EthernetDecoder < handle
                 if signal.getBit(i) ~= 0 || signal.getBit(i+1) ~= 1
                     obj.errorFlag = true;
                     
-                    disp("THERE WAS DESYNC");
                     %dbg---
                     i = obj.resync(signal, i);
                     %dbg---
