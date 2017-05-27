@@ -2,14 +2,18 @@ addpath(genpath('view'));
 addpath(genpath('model'));
 addpath(genpath('helper'));
 
-randomSignalSize = 12800;
+randomSignalSize = 6400;
 testIterations = 100;
 
 summaricBERWithoutEthernet = 0;
 summaricBERWithEthernet = 0;
+summaricBERWithScrambling = 0;
 
 encoder = EthernetCoder();
 decoder = EthernetDecoder();
+
+scrambler = Scrambler();
+descrambler = Descrambler();
 
 channel = CustomChannel();
 channel.desyncBreakpoint = 10;  
@@ -29,11 +33,27 @@ for i = 1 : testIterations
     receivedEnc = decoder.decode(receivedEncC);
     
     summaricBERWithEthernet = summaricBERWithEthernet + Helper.calculateBER(signal, receivedEnc);
+    
+    scrambler.resetLFSR();
+    descrambler.resetLFSR();
+    
+    scrambled = scrambler.scramble(signal.copy());
+    encoded = encoder.encode(scrambled);
+    channel.send(encoded);
+    receivedEncC = channel.receive();
+    receivedEnc = decoder.decode(receivedEncC);
+    descrambled = descrambler.descramble(receivedEnc);
+    
+    summaricBERWithScrambling = summaricBERWithScrambling + Helper.calculateBER(signal, descrambled);
+    
 end
 
-%summaricBERWithEthernet = summaricBERWithEthernet/testIterations;
-%summaricBERWithoutEthernet = summaricBERWithoutEthernet/testIterations;
-disp("With: ");
+summaricBERWithEthernet = summaricBERWithEthernet/testIterations;
+summaricBERWithoutEthernet = summaricBERWithoutEthernet/testIterations;
+summaricBERWithScrambling = summaricBERWithScrambling/testIterations;
+disp("With Ethernet: ");
 disp(summaricBERWithEthernet);
-disp("Without: ");
+disp("Without Ethernet: ");
 disp(summaricBERWithoutEthernet);
+disp("With Ethernet and Scrambling: ");
+disp(summaricBERWithScrambling);
