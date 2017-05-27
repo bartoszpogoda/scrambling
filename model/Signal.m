@@ -55,7 +55,7 @@ classdef Signal < handle
                     o = 0;
                 end
             else
-                disp("Error: Signal is " + obj.size + "-bit!");
+                disp("Error: Signal is " + obj.size + "-bit! (getBit)");
                 o = [];
         	end
         end
@@ -64,7 +64,7 @@ classdef Signal < handle
         	if i >= 1 && i<=obj.size
                 obj.bits(i) = true;
             else
-                disp("Error: Signal is " + obj.size + "-bit!");
+                % disp("Error: Signal is " + obj.size + "-bit! (setBit)");
         	end
         end
         
@@ -72,7 +72,7 @@ classdef Signal < handle
         	if i >= 1 && i<=obj.size
                 obj.bits(i) = false;
             else
-                disp("Error: Signal is " + obj.size + "-bit!");
+                % disp("Error: Signal is " + obj.size + "-bit! (clearBit)");
         	end
         end
         
@@ -85,7 +85,7 @@ classdef Signal < handle
                     obj.bits(i) = true;
                 end
             else
-                disp("Error: Signal is " + obj.size + "-bit!");
+                % disp("Error: Signal is " + obj.size + "-bit!");
         	end
         end
          

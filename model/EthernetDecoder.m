@@ -2,10 +2,129 @@ classdef EthernetDecoder < handle
     %ETHERNETDECODER Summary of this class goes here
     
     properties (Access = private)
-        errorFlag, badFrameIndex
+        errorFlag, badFrameIndex,
+        resyncPreamblesToCheck = 2, % number of preambles to check both to the left and right side
+        resyncPreambleCheckRange = 2
     end
     
     methods
+        function bestPreambleScore = checkForPreambleInRange(obj, signal, i)
+           bestPreambleScore = -1; % negative score if preamble is not found
+           
+           leftRange = i - obj.resyncPreambleCheckRange;
+           rightRange = obj.resyncPreambleCheckRange*2 + leftRange;
+           if leftRange < 1
+              leftRange = 1;
+           end
+           
+           while leftRange < signal.getSize() && leftRange <= rightRange
+               if signal.getBit(leftRange) == 0 && signal.getBit(leftRange + 1) == 1
+                    
+                   foundPreambleScore = obj.resyncPreambleCheckRange - abs(i - leftRange);   % based on distance
+                   if foundPreambleScore > bestPreambleScore 
+                      bestPreambleScore = foundPreambleScore; 
+                   end
+                   
+               end
+               leftRange = leftRange + 1;
+           end
+        end
+        
+        function dataIndex = resync(obj, signal, badFrameIndex)
+            % scores for preambles are 0, and they are not yet found so
+            % indexex are -1
+            potentialPreamblesScores = zeros(1,2*obj.resyncPreamblesToCheck);
+            potentialPreamblesIndexes = zeros(1,2*obj.resyncPreamblesToCheck);
+            
+            for i = 1 : 2*obj.resyncPreamblesToCheck
+                potentialPreamblesIndexes(i) = -1;
+            end
+            
+            % go left
+            iterator = badFrameIndex - 1;
+            foundPreamblesLeft = 0;
+            
+            while iterator >= 1 && foundPreamblesLeft ~= obj.resyncPreamblesToCheck
+                while iterator >= 1 && ~(signal.getBit(iterator) == 0 && signal.getBit(iterator+1) == 1)
+                    iterator = iterator - 1;
+                end
+                
+                if iterator >= 1
+                    % found '01' preamble
+                    foundPreamblesLeft = foundPreamblesLeft + 1;
+                    potentialPreamblesIndexes(foundPreamblesLeft) = iterator;
+                    
+                    % score logic
+                    score = 0;
+                    % score to the left
+                    currentPreambleIndex = iterator - 66;
+                    while currentPreambleIndex >= 1
+                       score = score + obj.checkForPreambleInRange(signal, currentPreambleIndex);
+                       currentPreambleIndex = currentPreambleIndex - 66;
+                    end
+                    % score to the right
+                    currentPreambleIndex = iterator + 66;
+                    while currentPreambleIndex < signal.getSize()
+                       score = score + obj.checkForPreambleInRange(signal, currentPreambleIndex);
+                       currentPreambleIndex = currentPreambleIndex + 66;
+                    end
+                    
+                    % save score
+                    potentialPreamblesScores(foundPreamblesLeft) = score;
+                    
+                    iterator = iterator - 1;
+                end
+            end
+            
+            % go right
+            iterator = badFrameIndex + 1;
+            foundPreamblesRight = 0;
+            
+            while iterator < signal.getSize() && foundPreamblesRight ~= obj.resyncPreamblesToCheck
+                while iterator < signal.getSize() && ~(signal.getBit(iterator) == 0 && signal.getBit(iterator+1) == 1) 
+                    iterator = iterator + 1;
+                end
+                
+                if iterator < signal.getSize()
+                    % found '01' preamble
+                    foundPreamblesRight = foundPreamblesRight + 1;
+                    potentialPreamblesIndexes(foundPreamblesRight + foundPreamblesLeft) = iterator;
+                    
+                     % score logic
+                    score = 0;
+                    % score to the left
+                    currentPreambleIndex = iterator - 66;
+                    while currentPreambleIndex >= 1
+                       score = score + obj.checkForPreambleInRange(signal, currentPreambleIndex);
+                       currentPreambleIndex = currentPreambleIndex - 66;
+                    end
+                    % score to the right
+                    currentPreambleIndex = iterator + 66;
+                    while currentPreambleIndex <= signal.getSize()
+                       score = score + obj.checkForPreambleInRange(signal, currentPreambleIndex);
+                       currentPreambleIndex = currentPreambleIndex + 66;
+                    end
+                    
+                    % save score
+                    potentialPreamblesScores(foundPreamblesRight + foundPreamblesLeft) = score;
+                    
+                    iterator = iterator + 1;
+                end
+            end
+            
+            bestMatchScore = -55555;
+            bestMatchIndex = -1;
+            for i = 1 : 2*obj.resyncPreamblesToCheck
+                if potentialPreamblesScores(i) > bestMatchScore
+                    bestMatchScore = potentialPreamblesScores(i);
+                    bestMatchIndex = i;
+                end
+            end
+            
+            dataIndex = potentialPreamblesIndexes(bestMatchIndex);
+            
+        end
+        
         function decodedSignal = decode(obj, signal)
             % clear previous error flag
             obj.errorFlag = false;
@@ -13,26 +132,29 @@ classdef EthernetDecoder < handle
             
             signalSize = signal.getSize();
             numberOfFrames = floor(signalSize/66);
-            
             decodedSignal = Signal(numberOfFrames*64);
             
-            % holds decodedSignal iterator index
-            k = 1;      
-            currentFrame = 1;
-            for i = 1 : 66 : signalSize - 65
+            k = 1; % holds decodedSignal iterator index
+            i = 1;
+            while i < signalSize
                 % check for preamble
                 if signal.getBit(i) ~= 0 || signal.getBit(i+1) ~= 1
                     obj.errorFlag = true;
-                    obj.badFrameIndex = currentFrame;
-                    return;
+                    
+                    %dbg---
+                    i = obj.resync(signal, i);
+                    %dbg---
+                else
+                    i = i + 2;
                 end
                     
+                limit = i + 64;
                 %copy all the (64 bit length) frame bits
-                for j = i + 2 : i + 65
-                    decodedSignal.setBitV(k, signal.getBit(j));
+                while  i <= signalSize && i < limit
+                    decodedSignal.setBitV(k, signal.getBit(i));
                     k = k + 1;
+                    i = i + 1;
                 end
-                currentFrame = currentFrame + 1;
             end
         end
         
