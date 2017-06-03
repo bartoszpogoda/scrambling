@@ -41,16 +41,17 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in sendButton.
 function sendButton_Callback(hObject, eventdata, handles)
-global encodedSignalVar; global channel; global receivedSignalVar;
+global channel; global workingSignal; global entrySignal;
 
-channel.send(encodedSignalVar);
-receivedSignalVar = channel.receive();
-set(handles.receivedSignal, 'String', receivedSignalVar.toString());
+channel.send(workingSignal);
+workingSignal = channel.receive();
+set(handles.receivedSignal, 'String', workingSignal.toString());
+set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
 
 % --- Executes on button press in scrambleButton.
 function scrambleButton_Callback(hObject, eventdata, handles)
-global originalSignalVar; global scrambledSignalVar; global LFSRFileVar;
+global LFSRFileVar; global workingSignal;
 if LFSRFileVar == 0
     disp('bezpliku');
     scrambler = Scrambler();
@@ -58,15 +59,14 @@ else
     disp('zplikiem');
     scrambler = Scrambler(LFSRFileVar);
 end
-originalSignalVarCopy = originalSignalVar.copy();
-scrambledSignalVar = scrambler.scramble(originalSignalVarCopy);
-set(handles.scrambledSignal, 'String', scrambledSignalVar.toString());
+workingSignal = scrambler.scramble(workingSignal.copy());
+set(handles.scrambledSignal, 'String', workingSignal.toString());
 scrambler.disp();
 
 
 % --- Executes on button press in descrambleButton.
 function descrambleButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global descrambledSignalVar; global originalSignalVar; global LFSRFileVar;
+global workingSignal; global LFSRFileVar; global entrySignal;
 if LFSRFileVar == 0
     disp('bezpliku');
     descrambler = Descrambler();
@@ -75,27 +75,27 @@ else
     descrambler = Descrambler(LFSRFileVar);
 end
 %descrambler = Descrambler();
-descrambledSignalVar = descrambler.descramble(decodedSignalVar);
-set(handles.descrambledSignal, 'String', descrambledSignalVar.toString());
-set(handles.berValue, 'String', Helper.calculateBER(originalSignalVar,descrambledSignalVar));
+workingSignal = descrambler.descramble(workingSignal);
+set(handles.descrambledSignal, 'String', workingSignal.toString());
+set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
 
 % --- Executes on button press in encodeButton.
 function encodeButton_Callback(hObject, eventdata, handles)
-global encodedSignalVar; global scrambledSignalVar;
+global workingSignal;
 
 encoder = EthernetCoder();
-scrambledSignalVarCopy = scrambledSignalVar;
-encodedSignalVar = encoder.encode(Helper.appendToAlign64(scrambledSignalVarCopy));
-set(handles.encodedSignal, 'String', encodedSignalVar.toString());
+workingSignal = encoder.encode(Helper.appendToAlign64(workingSignal));
+set(handles.encodedSignal, 'String', workingSignal.toString());
 
 
 % --- Executes on button press in decodeButton.
 function decodeButton_Callback(hObject, eventdata, handles)
-global decodedSignalVar; global receivedSignalVar;
+global workingSignal; global entrySignal;
 decoder = EthernetDecoder();
-decodedSignalVar = decoder.decode(receivedSignalVar);
-set(handles.decodedSignal, 'String', decodedSignalVar.toString());
+workingSignal = decoder.decode(workingSignal);
+set(handles.decodedSignal, 'String', workingSignal.toString());
+set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
 
 
@@ -170,18 +170,18 @@ LFSRFileVar = 0;
 
 % --- Executes on button press in btnSignalOK.
 function btnSignalOK_Callback(hObject, eventdata, handles)
-global originalSignalVar; global file;
+global entrySignal; global workingSignal;
 
 if get(handles.rbSignalRandom,'value') == 1
-    originalSignalVar = Helper.randSignal(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
+    entrySignal = Helper.randSignal(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
+    
 elseif get(handles.rbSignalFromFile,'value') == 1
     [fn, fp] = uigetfile('*.txt', 'Select signal file');
-    originalSignalVar = Signal(fullfile(fp,fn));
-    set(handles.originalSignal, 'string', originalSignalVar.toString());
-    
+    entrySignal = Signal(fullfile(fp,fn));
 end
 
-set(handles.originalSignal, 'string', originalSignalVar.toString());
+workingSignal = entrySignal.copy();
+set(handles.originalSignal, 'string', entrySignal.toString());
 
 
 % --- Executes during object creation, after setting all properties.
