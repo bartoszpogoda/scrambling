@@ -2,12 +2,12 @@ classdef EthernetDecoder < handle
     %ETHERNETDECODER Summary of this class goes here
     
     properties (Access = private)
-        errorFlag, badFrameIndex,
+        errorFlag,
         resyncPreamblesToCheck = 2, % number of preambles to check both to the left and right side
         resyncPreambleCheckRange = 2
     end
     
-    methods
+    methods (Access = private)
         function bestPreambleScore = checkForPreambleInRange(obj, signal, i)
            bestPreambleScore = -1; % negative score if preamble is not found
            
@@ -124,11 +124,12 @@ classdef EthernetDecoder < handle
             dataIndex = potentialPreamblesIndexes(bestMatchIndex);
             
         end
-        
+    end
+    
+    methods
         function decodedSignal = decode(obj, signal)
             % clear previous error flag
             obj.errorFlag = false;
-            obj.badFrameIndex = -1;
             
             signalSize = signal.getSize();
             numberOfFrames = floor(signalSize/66);
@@ -140,10 +141,7 @@ classdef EthernetDecoder < handle
                 % check for preamble
                 if signal.getBit(i) ~= 0 || signal.getBit(i+1) ~= 1
                     obj.errorFlag = true;
-                    
-                    %dbg---
                     i = obj.resync(signal, i);
-                    %dbg---
                 else
                     i = i + 2;
                 end
@@ -160,10 +158,6 @@ classdef EthernetDecoder < handle
         
         function o = wasGood(obj)
             o = not(obj.errorFlag);
-        end
-        
-        function o = badFrame(obj)
-            o = obj.badFrameIndex;
         end
         
     end
