@@ -2,8 +2,8 @@ addpath(genpath('view'));
 addpath(genpath('model'));
 addpath(genpath('helper'));
 
-randomSignalSize = 6400;
-testIterations = 100;
+randomSignalSize = 640;
+testIterations = 1000;
 
 summaricBERWithoutEthernet = 0;
 summaricBERWithEthernet = 0;
@@ -16,7 +16,7 @@ scrambler = Scrambler();
 descrambler = Descrambler();
 
 channel = CustomChannel();
-channel.desyncBreakpoint = 10;  
+channel.desyncBreakpoint = 15;  
 channel.desyncType = 1;
 
 for i = 1 : testIterations 
