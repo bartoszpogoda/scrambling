@@ -46,6 +46,8 @@ global channel; global workingSignal; global entrySignal;
 channel.send(workingSignal);
 workingSignal = channel.receive();
 set(handles.receivedSignal, 'String', workingSignal.toString());
+resetBackgroundColorsToGrey(handles);
+set(handles.receivedSignal, 'BackgroundColor', [0.91 0.99 0.91]);
 set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
 
@@ -60,6 +62,8 @@ else
     scrambler = Scrambler(LFSRFileVar);
 end
 workingSignal = scrambler.scramble(workingSignal.copy());
+resetBackgroundColorsToGrey(handles);
+set(handles.scrambledSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.scrambledSignal, 'String', workingSignal.toString());
 scrambler.disp();
 
@@ -76,6 +80,8 @@ else
 end
 %descrambler = Descrambler();
 workingSignal = descrambler.descramble(workingSignal);
+resetBackgroundColorsToGrey(handles);
+set(handles.descrambledSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.descrambledSignal, 'String', workingSignal.toString());
 set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
@@ -86,6 +92,8 @@ global workingSignal;
 
 encoder = EthernetCoder();
 workingSignal = encoder.encode(Helper.appendToAlign64(workingSignal));
+resetBackgroundColorsToGrey(handles);
+set(handles.encodedSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.encodedSignal, 'String', workingSignal.toString());
 
 
@@ -94,6 +102,8 @@ function decodeButton_Callback(hObject, eventdata, handles)
 global workingSignal; global entrySignal;
 decoder = EthernetDecoder();
 workingSignal = decoder.decode(workingSignal);
+resetBackgroundColorsToGrey(handles);
+set(handles.decodedSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.decodedSignal, 'String', workingSignal.toString());
 set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
@@ -164,6 +174,7 @@ set(handles.btnConfigureChannel,'enable','off');
 set(handles.tbSignalRandomSize,'enable','off');
 set(handles.btnSignalOK,'enable','on');
 set(handles.btnSignalOK,'string','Load');
+resetBackgroundColorsToGrey(handles);
 global LFSRFileVar;
 LFSRFileVar = 0;
 
@@ -181,6 +192,8 @@ elseif get(handles.rbSignalFromFile,'value') == 1
 end
 
 workingSignal = entrySignal.copy();
+resetBackgroundColorsToGrey(handles);
+set(handles.originalSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.originalSignal, 'string', entrySignal.toString());
 
 
@@ -217,3 +230,12 @@ set(hObject,'value',1);
 function rbIdealChannel_CreateFcn(hObject, eventdata, handles)
 
 set(hObject,'value',1);
+
+function resetBackgroundColorsToGrey(handles)
+set(handles.receivedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.scrambledSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.descrambledSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.originalSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.encodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.decodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+
