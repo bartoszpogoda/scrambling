@@ -2,8 +2,7 @@ addpath(genpath('helper'));
 addpath(genpath('model'));
 
 randomGen = RandomGenerator();
-randomGen.mode = 1;
-randomGen.duplProb = 0.7;
+randomGen.duplProb = 0.5;
 
 signal = randomGen.generate(50);
 signal

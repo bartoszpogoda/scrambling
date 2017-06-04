@@ -101,11 +101,17 @@ set(handles.encodedSignal, 'String', workingSignal.toString());
 function decodeButton_Callback(hObject, eventdata, handles)
 global workingSignal; global entrySignal;
 decoder = EthernetDecoder();
-workingSignal = decoder.decode(workingSignal);
+workingSignal = decoder.decode(workingSignal); 
 resetBackgroundColorsToGrey(handles);
 set(handles.decodedSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.decodedSignal, 'String', workingSignal.toString());
 set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
+
+if decoder.wasGood()
+    set(handles.desyncIndicator, 'BackgroundColor', [0 1 0]);
+else
+    set(handles.desyncIndicator, 'BackgroundColor', [1 0 0]);
+end
 
 
 
@@ -181,10 +187,10 @@ LFSRFileVar = 0;
 
 % --- Executes on button press in btnSignalOK.
 function btnSignalOK_Callback(hObject, eventdata, handles)
-global entrySignal; global workingSignal;
+global entrySignal; global workingSignal; global random;
 
 if get(handles.rbSignalRandom,'value') == 1
-    entrySignal = Helper.randSignal(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
+    entrySignal = random.generate(64 * str2num(get(handles.tbSignalRandomSize, 'String')));
     
 elseif get(handles.rbSignalFromFile,'value') == 1
     [fn, fp] = uigetfile('*.txt', 'Select signal file');
@@ -203,8 +209,12 @@ function tbSignalRandomSize_CreateFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in rbSignalRandom.
 function rbSignalRandom_Callback(hObject, eventdata, handles)
+global random;
 
+random = RandomGenerator();
+random.duplProb = 0.5;
 set(handles.tbSignalRandomSize,'enable','on');
+set(handles.configureRandom,'enable','on');
 set(handles.btnSignalOK,'enable','on');
 set(handles.btnSignalOK,'string','Generate');
 
@@ -216,6 +226,7 @@ function tbSignalRandomSize_Callback(hObject, eventdata, handles)
 function rbSignalFromFile_Callback(hObject, eventdata, handles)
 
 set(handles.tbSignalRandomSize,'enable','off');
+set(handles.configureRandom,'enable','off');
 set(handles.btnSignalOK,'enable','on');
 set(handles.btnSignalOK,'string','Load');
 
@@ -238,6 +249,7 @@ set(handles.descrambledSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 set(handles.originalSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 set(handles.encodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 set(handles.decodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
+set(handles.desyncIndicator, 'BackgroundColor', [0.9 0.9 0.9]);
 
 
 
@@ -255,3 +267,13 @@ workingSignal = entrySignal.copy();
 resetBackgroundColorsToGrey(handles);
 set(handles.originalSignal, 'BackgroundColor', [0.91 0.96 0.91]);
 set(handles.originalSignal, 'string', entrySignal.toString());
+
+
+% --- Executes on button press in configureRandom.
+function configureRandom_Callback(hObject, eventdata, handles)
+ConfigureRandom();
+
+
+% --- Executes during object creation, after setting all properties.
+function configureRandom_CreateFcn(hObject, eventdata, handles)
+set(hObject,'enable','off');
