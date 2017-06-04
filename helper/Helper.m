@@ -10,10 +10,6 @@ classdef Helper
             for i = 1 : currentSize
                 o.setBitV(i, signal.getBit(i));
             end
-            
-            % for i = currentSize + 1 : newSize
-            %     obj.clearBit(i)
-            % end
         end
         
         function o = calculateBER(signalA, signalB)
@@ -30,16 +26,5 @@ classdef Helper
             
             o = incorrectBits/allBits;
         end
-        
-        function o = randSignal(signalSize)
-            o = Signal(signalSize);
-            for i = 1 : signalSize 
-                if round(rand())
-                    o.setBit(i);
-                end
-            end
-        end
-        
     end
-    
 end

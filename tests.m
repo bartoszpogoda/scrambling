@@ -11,10 +11,10 @@ descrambler = Descrambler();
 
 % PARAMETERS
 testIterations = 1000;                       
-randomSignalSize = 640;
+randomSignalSize = 6400;
 randomGenerator.duplProb = 0.60;
 channel = CustomChannel();
-channel.desyncBreakpoint = 10;  
+channel.desyncBreakpoint = 12;  
 channel.desyncType = 2;
 
 % TEST LOGIC
@@ -64,8 +64,14 @@ summaricBERWithScrambling = summaricBERWithScrambling/testIterations;
 
 % PRINT RESULTS
 
-disp("RESULTS: ");
 toc;
-disp("Nothing ; " + summaricBERWithoutEthernet);
-disp("Ethernet ; " + summaricBERWithEthernet);
-disp("Scrambling + Ethernet ; " + summaricBERWithScrambling);
+disp("PARAMETERS")
+disp("Iterations;" + testIterations);
+disp("SignalSize;" + randomSignalSize); 
+disp("Duplication prob;" + randomGenerator.duplProb);   
+disp("Desync breakpoint;" + channel.desyncBreakpoint);
+disp("DesyncType;" + channel.desyncType); 
+disp("RESULTS");
+disp("Nothing;" + summaricBERWithoutEthernet);
+disp("Ethernet;" + summaricBERWithEthernet);
+disp("ScramblingEthernet;" + summaricBERWithScrambling);

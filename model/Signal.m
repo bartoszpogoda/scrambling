@@ -135,23 +135,11 @@ classdef Signal < handle
             for i = 1 : obj.size
                 if obj.bits(i) == true
                     o = strcat(o,'1');
-                   % o = [o, '1'];
                 else
                     o = strcat(o,'0');
-                   % o = [o, '0'];
-                end
-                
-                %Jantos doda³ - czyli nie dzia³a ( \n co 32bit)
-                if mod(i, 5) == 0
-                    % o = sprintf('%s\n',o);
-                    %o = strcat(o,'\n');
-                    % o = sprintf('%s\n%s',o,' ');
-                      %  o = [o, ' '];
                 end
             end
         end
-        
     end
-    
 end
 
