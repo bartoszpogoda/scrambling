@@ -92,6 +92,8 @@ if get(handles.rbDesyncTypeAppend,'value') == 1
     channel.desyncType = 1;
 elseif get(handles.rbDesyncTypeDelete,'value') == 1
     channel.desyncType = -1;
+elseif get(handles.rbDesyncTypeRandom,'value') == 1
+    channel.desyncType = 2;
 else
     channel.desyncType = 0;
 end

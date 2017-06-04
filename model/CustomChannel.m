@@ -4,7 +4,7 @@ classdef CustomChannel < Channel
     
     properties 
         singleErrors, periodicNumOfBits, periodicInterval, periodicStart,
-        desyncBreakpoint, desyncType % type 1 - add, 0 - none, type -1 - delete
+        desyncBreakpoint, desyncType % type 1 - add, 0 - none, type -1 - delete, 2 - random
     end
     
 	methods (Access = private)
@@ -79,11 +79,19 @@ classdef CustomChannel < Channel
                         % add one more 0 or 1
                         signal.insertBit(i, repeatState);
                         i = i+1; % fix loop
-                        
                     elseif obj.desyncType == -1
                         % delete one bit
                         signal.removeBit(i);
                         i = i-1; % fix loop
+                    elseif obj.desyncType == 2
+                        % random
+                        if round(rand())
+                            signal.insertBit(i, repeatState);
+                            i = i+1; % fix loop
+                        else
+                            signal.removeBit(i);
+                            i = i-1; % fix loop
+                        end
                     end
                     
                     repeatCounter = 0;
