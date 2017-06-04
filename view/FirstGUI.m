@@ -239,3 +239,19 @@ set(handles.originalSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 set(handles.encodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 set(handles.decodedSignal, 'BackgroundColor', [0.9 0.9 0.9]);
 
+
+
+% --- Executes on button press in btnResetTransm.
+function btnResetTransm_Callback(hObject, eventdata, handles)
+global workingSignal; global entrySignal;
+set(handles.scrambledSignal, 'String', '');
+set(handles.encodedSignal, 'String', '');
+set(handles.receivedSignal, 'String', '');
+set(handles.decodedSignal, 'String', '');
+set(handles.descrambledSignal, 'String', '');
+set(handles.berValue, 'String', '-');
+
+workingSignal = entrySignal.copy();
+resetBackgroundColorsToGrey(handles);
+set(handles.originalSignal, 'BackgroundColor', [0.91 0.96 0.91]);
+set(handles.originalSignal, 'string', entrySignal.toString());
