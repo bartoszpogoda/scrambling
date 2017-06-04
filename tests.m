@@ -2,58 +2,70 @@ addpath(genpath('view'));
 addpath(genpath('model'));
 addpath(genpath('helper'));
 
-randomSignalSize = 640;
-testIterations = 1000;
+% COMPONENTS INIT
+randomGenerator = RandomGenerator();
+encoder = EthernetCoder();
+decoder = EthernetDecoder();
+scrambler = Scrambler();
+descrambler = Descrambler();
 
+% PARAMETERS
+testIterations = 1000;                       
+randomSignalSize = 640;
+randomGenerator.duplProb = 0.60;
+channel = CustomChannel();
+channel.desyncBreakpoint = 10;  
+channel.desyncType = 2;
+
+% TEST LOGIC
 summaricBERWithoutEthernet = 0;
 summaricBERWithEthernet = 0;
 summaricBERWithScrambling = 0;
 
-encoder = EthernetCoder();
-decoder = EthernetDecoder();
-
-scrambler = Scrambler();
-descrambler = Descrambler();
-
-channel = CustomChannel();
-channel.desyncBreakpoint = 10;  
-channel.desyncType = 1;
-
+tic;
 for i = 1 : testIterations 
-    signal = Helper.randSignal(randomSignalSize);
+    % GENERATE SIGNAL
+    generatedSignal = randomGenerator.generate(randomSignalSize);
     
-    channel.send(signal);
-    receivedNoEnc = channel.receive();
+    % CLEAR TRANSMISSION
+    workingSignal = generatedSignal.copy();
+    channel.send(workingSignal);
+    workingSignal = channel.receive();
     
-    summaricBERWithoutEthernet = summaricBERWithoutEthernet + Helper.calculateBER(signal, receivedNoEnc);
+    summaricBERWithoutEthernet = summaricBERWithoutEthernet + Helper.calculateBER(generatedSignal, workingSignal);
     
-    encoded = encoder.encode(signal);
-    channel.send(encoded);
-    receivedEncC = channel.receive();
-    receivedEnc = decoder.decode(receivedEncC);
+    % ETHERNET TRANSMISSION
+    workingSignal = generatedSignal.copy();
+    workingSignal = encoder.encode(workingSignal);
+    channel.send(workingSignal);
+    workingSignal = channel.receive();
+    workingSignal = decoder.decode(workingSignal);
     
-    summaricBERWithEthernet = summaricBERWithEthernet + Helper.calculateBER(signal, receivedEnc);
+    summaricBERWithEthernet = summaricBERWithEthernet + Helper.calculateBER(generatedSignal, workingSignal);
     
+    % SCRAMBLER + ETHERNET TRANSMISSION
+    workingSignal = generatedSignal.copy();
     scrambler.resetLFSR();
     descrambler.resetLFSR();
     
-    scrambled = scrambler.scramble(signal.copy());
-    encoded = encoder.encode(scrambled);
-    channel.send(encoded);
-    receivedEncC = channel.receive();
-    receivedEnc = decoder.decode(receivedEncC);
-    descrambled = descrambler.descramble(receivedEnc);
+    workingSignal = scrambler.scramble(workingSignal);
+    workingSignal = encoder.encode(workingSignal);
+    channel.send(workingSignal);
+    workingSignal = channel.receive();
+    workingSignal = decoder.decode(workingSignal);
+    descrambled = descrambler.descramble(workingSignal);
     
-    summaricBERWithScrambling = summaricBERWithScrambling + Helper.calculateBER(signal, descrambled);
-    
+    summaricBERWithScrambling = summaricBERWithScrambling + Helper.calculateBER(generatedSignal, workingSignal);
 end
 
 summaricBERWithEthernet = summaricBERWithEthernet/testIterations;
 summaricBERWithoutEthernet = summaricBERWithoutEthernet/testIterations;
 summaricBERWithScrambling = summaricBERWithScrambling/testIterations;
-disp("With Ethernet: ");
-disp(summaricBERWithEthernet);
-disp("Without Ethernet: ");
-disp(summaricBERWithoutEthernet);
-disp("With Ethernet and Scrambling: ");
-disp(summaricBERWithScrambling);
+
+% PRINT RESULTS
+
+disp("RESULTS: ");
+toc;
+disp("Nothing ; " + summaricBERWithoutEthernet);
+disp("Ethernet ; " + summaricBERWithEthernet);
+disp("Scrambling + Ethernet ; " + summaricBERWithScrambling);
