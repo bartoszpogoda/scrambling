@@ -24,13 +24,15 @@ end
 
 % --- Executes just before FirstGUI is made visible.
 function FirstGUI_OpeningFcn(hObject, eventdata, handles, varargin)
-global channel;
+global channel; global encoder; global decoder;
 
 handles.output = hObject;
 guidata(hObject, handles);
 movegui(hObject,'center');
 set(handles.rbIdealChannel,'value',1);
 channel = IdealChannel();
+encoder = EthernetCoder();
+decoder = EthernetDecoder();
     
 
 % --- Outputs from this function are returned to the command line.
@@ -88,9 +90,8 @@ set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 
 % --- Executes on button press in encodeButton.
 function encodeButton_Callback(hObject, eventdata, handles)
-global workingSignal;
+global workingSignal; global encoder; 
 
-encoder = EthernetCoder();
 workingSignal = encoder.encode(Helper.appendToAlign64(workingSignal));
 resetBackgroundColorsToGrey(handles);
 set(handles.encodedSignal, 'BackgroundColor', [0.91 0.96 0.91]);
@@ -99,8 +100,7 @@ set(handles.encodedSignal, 'String', workingSignal.toString());
 
 % --- Executes on button press in decodeButton.
 function decodeButton_Callback(hObject, eventdata, handles)
-global workingSignal; global entrySignal;
-decoder = EthernetDecoder();
+global workingSignal; global entrySignal; global decoder;
 workingSignal = decoder.decode(workingSignal); 
 resetBackgroundColorsToGrey(handles);
 set(handles.decodedSignal, 'BackgroundColor', [0.91 0.96 0.91]);
@@ -277,3 +277,8 @@ ConfigureRandom();
 % --- Executes during object creation, after setting all properties.
 function configureRandom_CreateFcn(hObject, eventdata, handles)
 set(hObject,'enable','off');
+
+
+% --- Executes during object creation, after setting all properties.
+function desyncIndicator_CreateFcn(hObject, eventdata, handles)
+set(hObject, 'BackgroundColor', [0.9 0.9 0.9]);
