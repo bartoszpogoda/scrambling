@@ -8,14 +8,14 @@ encoder = EthernetCoder();
 decoder = EthernetDecoder();
 scrambler = Scrambler();
 descrambler = Descrambler();
+channel = CustomChannel();       
 
 % PARAMETERS
 testIterations = 1000;                       
-randomSignalSize = 6400;
-randomGenerator.duplProb = 0.60;
-channel = CustomChannel();
-channel.desyncBreakpoint = 12;  
-channel.desyncType = 2;
+randomSignalSize = 640;
+randomGenerator.duplProb = 0.60;   
+channel.desyncBreakpoint = 12;      
+channel.desyncType = 2;             
 
 % TEST LOGIC
 summaricBERWithoutEthernet = 0;
