@@ -121,7 +121,7 @@ classdef EthernetDecoder < handle
                 end
             end
             
-            dataIndex = potentialPreamblesIndexes(bestMatchIndex);
+            dataIndex = potentialPreamblesIndexes(bestMatchIndex) + 2;
             
         end
     end

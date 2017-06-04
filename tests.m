@@ -16,7 +16,7 @@ scrambler = Scrambler();
 descrambler = Descrambler();
 
 channel = CustomChannel();
-channel.desyncBreakpoint = 15;  
+channel.desyncBreakpoint = 10;  
 channel.desyncType = 1;
 
 for i = 1 : testIterations 
