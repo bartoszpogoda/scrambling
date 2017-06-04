@@ -110,7 +110,7 @@ set(handles.berValue, 'String', Helper.calculateBER(entrySignal,workingSignal));
 if decoder.wasGood()
     set(handles.desyncIndicator, 'BackgroundColor', [0 1 0]);
 else
-    set(handles.desyncIndicator, 'BackgroundColor', [1 0 0]);
+    set(handles.desyncIndicator, 'BackgroundColor', [1 1 0]);
 end
 
 
