@@ -5,4 +5,4 @@ randomGen = RandomGenerator();
 randomGen.duplProb = 0.5;
 
 signal = randomGen.generate(50);
-signal
+disp(signal.toString());

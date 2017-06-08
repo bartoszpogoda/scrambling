@@ -112,6 +112,7 @@ classdef EthernetDecoder < handle
                 end
             end
             
+            % find best match
             bestMatchScore = -55555;
             bestMatchIndex = -1;
             for i = 1 : 2*obj.resyncPreamblesToCheck

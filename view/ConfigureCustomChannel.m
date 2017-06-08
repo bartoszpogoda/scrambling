@@ -137,3 +137,13 @@ end
 
 
 function tbDesyncBreakpoint_Callback(hObject, eventdata, handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function rbDesyncTypeRandom_CreateFcn(hObject, eventdata, handles)
+
+global channel;
+
+if channel.desyncType == 2
+    set(hObject,'value',1);
+end

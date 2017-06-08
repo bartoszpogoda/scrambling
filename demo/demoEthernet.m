@@ -38,7 +38,7 @@ signal = ethernetDecoder.decode(signal);
 disp("Signal after decoding:");
 signal.disp();
 fprintf("Size: %d \n", signal.getSize());
-fprintf("Was good: %d  Bad preamble at frame %d \n", ethernetDecoder.wasGood(), ethernetDecoder.badFrame());
+fprintf("Was good: %d \n", ethernetDecoder.wasGood());
 
 % SYNC-LOSS SIMULATION
 
@@ -78,6 +78,6 @@ signal = ethernetDecoder.decode(signal);
 disp("Signal after decoding:");
 signal.disp();
 fprintf("Size: %d \n", signal.getSize());
-fprintf("Was good: %d  Bad preamble at frame %d \n", ethernetDecoder.wasGood(), ethernetDecoder.badFrame());
+fprintf("Was good: %d\n", ethernetDecoder.wasGood());
 
 

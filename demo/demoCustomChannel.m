@@ -4,8 +4,11 @@ addpath(genpath('helper'));
 % parameters
 signalSize = 64;
 
+random = RandomGenerator();
+random.duplProb = 0.7;
+
 customChannel = CustomChannel;                % create custom channel 
-signalSender = Helper.randSignal(signalSize); % create signal
+signalSender = random.generate(signalSize); % create signal
 
 disp("Value at sender's side: " + signalSender.toString());
 
@@ -33,7 +36,7 @@ disp("Error channel state: " + customChannel.singleErrorsToString());
 disp(" ");
 disp("Desync Test: ")
 
-rSignal = Helper.randSignal(16); % create signal
+rSignal = random.generate(16); % create signal
 disp("Signal at sender's side: " + rSignal.toString());
 
 customChannel = CustomChannel();

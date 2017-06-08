@@ -1,10 +1,8 @@
 classdef CustomChannel < Channel
-    %CUSTOMCHANNEL Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties 
         singleErrors, periodicNumOfBits, periodicInterval, periodicStart,
-        desyncBreakpoint, desyncType % type 1 - add, 0 - none, type -1 - delete, 2 - random
+        desyncBreakpoint, desyncType % type 1 - add, 0 - none, -1 - delete, 2 - random
     end
     
 	methods (Access = private)

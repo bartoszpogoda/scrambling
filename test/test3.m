@@ -13,8 +13,8 @@ channel2 = CustomChannel();
 
 % PARAMETERS
 testIterations = 1000;                       
-randomSignalSize = 640;
-randomGenerator.duplProb = 0.70;   
+randomSignalSize = 1280;
+randomGenerator.duplProb = 0.60;   
 channel1.probability = 0.01;          
 channel2.desyncBreakpoint = 12;      
 channel2.desyncType = 2;             
