@@ -34,15 +34,6 @@ function varargout = ConfigureCustomChannel_OutputFcn(hObject, eventdata, handle
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in singleOKButton.
-function singleOKButton_Callback(hObject, eventdata, handles)
-global channel;
-
-textBoxString = get(handles.singleIndexes, 'String');
-channel.singleErrors = sscanf(textBoxString, '%d ');
-close(handles.wrongBitsFigure);
-
-
 function singleIndexes_CreateFcn(hObject, eventdata, handles)
 global channel;
 
@@ -52,19 +43,6 @@ if  strcmp(singleErrorsString, '')
 else
     set(hObject,'string',channel.singleErrorsToString());
 end
-
-function periodicOKButton_Callback(hObject, eventdata, handles)
-global channel;
-
-number = str2num(get(handles.periodicNumberOfBits, 'String'));
-interval = str2num(get(handles.periodicInterval, 'String'));
-start = str2num(get(handles.periodicStart, 'String'));
-
-channel.periodicNumOfBits = number;
-channel.periodicInterval = interval;
-channel.periodicStart = start;
-
-close(handles.wrongBitsFigure);
 
 function periodicNumberOfBits_CreateFcn(hObject, eventdata, handles)
 global channel;
@@ -81,24 +59,6 @@ global channel;
 
 set(hObject,'string',channel.periodicStart);
 
-
-% --- Executes on button press in btnDesyncOK.
-function btnDesyncOK_Callback(hObject, eventdata, handles)
-global channel;
-
-channel.desyncBreakpoint = str2num(get(handles.tbDesyncBreakpoint, 'String'));
-
-if get(handles.rbDesyncTypeAppend,'value') == 1
-    channel.desyncType = 1;
-elseif get(handles.rbDesyncTypeDelete,'value') == 1
-    channel.desyncType = -1;
-elseif get(handles.rbDesyncTypeRandom,'value') == 1
-    channel.desyncType = 2;
-else
-    channel.desyncType = 0;
-end
-    
-close(handles.wrongBitsFigure);
 
 % --- Executes during object creation, after setting all properties.
 function tbDesyncBreakpoint_CreateFcn(hObject, eventdata, handles)
@@ -147,3 +107,38 @@ global channel;
 if channel.desyncType == 2
     set(hObject,'value',1);
 end
+
+
+% --- Executes on button press in btnOKglobal.
+function btnOKglobal_Callback(hObject, eventdata, handles)
+global channel;
+
+% single errors
+textBoxString = get(handles.singleIndexes, 'String');
+channel.singleErrors = sscanf(textBoxString, '%d ');
+
+% periodic errors
+number = str2num(get(handles.periodicNumberOfBits, 'String'));
+interval = str2num(get(handles.periodicInterval, 'String'));
+start = str2num(get(handles.periodicStart, 'String'));
+
+channel.periodicNumOfBits = number;
+channel.periodicInterval = interval;
+channel.periodicStart = start;
+
+% desync errors
+channel.desyncBreakpoint = str2num(get(handles.tbDesyncBreakpoint, 'String'));
+
+if get(handles.rbDesyncTypeAppend,'value') == 1
+    channel.desyncType = 1;
+elseif get(handles.rbDesyncTypeDelete,'value') == 1
+    channel.desyncType = -1;
+elseif get(handles.rbDesyncTypeRandom,'value') == 1
+    channel.desyncType = 2;
+else
+    channel.desyncType = 0;
+end
+
+close(handles.wrongBitsFigure);
+
+
